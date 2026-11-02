@@ -77,3 +77,7 @@ Sheets on the drying line and your own recipes are kept in the browser's local s
 - [Aubrey Jaffer, Mathematics of Marbling](https://people.csail.mit.edu/jaffer/Marbling/Mathematics)
 - [University of Washington Libraries, Decorated Paper: marbled patterns](https://content.lib.washington.edu/dpweb/patterns.html)
 - [Paper marbling, Wikipedia](https://en.wikipedia.org/wiki/Paper_marbling)
+
+## Licence
+
+MIT. See [LICENSE](LICENSE).
