@@ -1,0 +1,2826 @@
+<title>The Marbling Atelier</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&display=swap">
+<style>
+/* Layout: a binder's bench. Tooled morocco ground, an oak marbling trough in the middle,
+   the colour pots on the left and the pattern book on the right, both on vellum leaves. */
+:root {
+  --morocco: #4b1f17;
+  --morocco-deep: #33140e;
+  --gilt: #c9a14a;
+  --gilt-hi: #f1d98f;
+  --gilt-lo: #8b6a27;
+  --vellum: #efe4c8;
+  --vellum-2: #e3d3ad;
+  --ink: #2b1f16;
+  --ink-soft: #6b5743;
+  --rule: rgba(43, 31, 22, .22);
+  --sel: #7d2a1d;
+  --on-morocco: #ecdcb3;
+  --on-morocco-soft: #c9b48a;
+  --oak: #7b5233;
+  --oak-dark: #4a2f1b;
+  --shadow: rgba(25, 9, 4, .45);
+  --field: #f7efda;
+
+  --display: "IM Fell English SC", "IM Fell English", Garamond, "Times New Roman", serif;
+  --italic: "IM Fell English", Garamond, Georgia, serif;
+  --body: "EB Garamond", Garamond, Georgia, "Times New Roman", serif;
+
+  --step--1: .82rem;
+  --step-0: 1rem;
+  --step-1: 1.2rem;
+  --step-2: 1.55rem;
+  --step-3: clamp(2rem, 4.6vw, 3.4rem);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --morocco: #26110d; --morocco-deep: #170907;
+    --vellum: #2b2219; --vellum-2: #362a1f;
+    --ink: #eddcb8; --ink-soft: #b7a281; --rule: rgba(237, 220, 184, .17);
+    --sel: #e09774; --on-morocco: #e8d6a8; --on-morocco-soft: #b49d74;
+    --oak: #5a3b23; --oak-dark: #2f1d10; --shadow: rgba(0, 0, 0, .6); --field: #231b14;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --morocco: #26110d; --morocco-deep: #170907;
+  --vellum: #2b2219; --vellum-2: #362a1f;
+  --ink: #eddcb8; --ink-soft: #b7a281; --rule: rgba(237, 220, 184, .17);
+  --sel: #e09774; --on-morocco: #e8d6a8; --on-morocco-soft: #b49d74;
+  --oak: #5a3b23; --oak-dark: #2f1d10; --shadow: rgba(0, 0, 0, .6); --field: #231b14;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  margin: 0;
+  background-color: var(--morocco);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 30% 0%, rgba(255,255,255,.06), transparent 60%),
+    radial-gradient(ellipse at 100% 100%, rgba(0,0,0,.35), transparent 55%);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+.page {
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 18px 28px;
+  max-width: 1560px;
+  margin: 0 auto;
+}
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--gilt); outline-offset: 2px; }
+
+/* ---------- Masthead: tooled like a spine label ---------- */
+.masthead {
+  position: relative;
+  border: 1px solid var(--gilt-lo);
+  outline: 3px double var(--gilt);
+  outline-offset: 4px;
+  margin: 8px 8px 26px;
+  padding: 18px 22px 16px;
+  color: var(--on-morocco);
+  background: linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,0) 40%), var(--morocco-deep);
+  box-shadow: inset 0 0 40px rgba(0,0,0,.45);
+}
+.mast-inner { display: flex; flex-wrap: wrap; gap: 14px 40px; align-items: flex-end; justify-content: space-between; }
+.mast-title { min-width: 0; flex: 1 1 520px; }
+.eyebrow {
+  margin: 0 0 4px; font-family: var(--body); font-variant-caps: all-small-caps; letter-spacing: .14em;
+  color: var(--on-morocco-soft); font-size: var(--step-0);
+}
+h1 {
+  margin: 0; font-family: var(--display); font-weight: 400; font-size: var(--step-3); line-height: 1;
+  letter-spacing: .02em; text-wrap: balance;
+  background: linear-gradient(180deg, var(--gilt-hi) 0%, var(--gilt) 48%, var(--gilt-lo) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  text-shadow: 0 1px 0 rgba(0,0,0,.15);
+}
+.sub { margin: 8px 0 0; font-family: var(--italic); font-style: italic; font-size: var(--step-1); max-width: 62ch; color: var(--on-morocco); }
+.lineage {
+  list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: auto auto; gap: 1px 14px;
+  font-size: var(--step--1); color: var(--on-morocco-soft); font-variant-numeric: oldstyle-nums;
+}
+.lineage li span { color: var(--gilt); font-variant-caps: all-small-caps; letter-spacing: .1em; }
+
+/* ---------- Bench grid ---------- */
+.bench {
+  display: grid;
+  grid-template-columns: minmax(230px, 270px) minmax(0, 1fr) minmax(250px, 320px);
+  grid-template-areas: "pots work book";
+  gap: 22px;
+  align-items: start;
+}
+.pots { grid-area: pots; }
+.workspace { grid-area: work; min-width: 0; }
+.book { grid-area: book; }
+@media (max-width: 1180px) {
+  .bench { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "work work" "pots book"; }
+}
+@media (max-width: 760px) {
+  .bench { grid-template-columns: minmax(0, 1fr); grid-template-areas: "work" "pots" "book"; }
+  .masthead { margin: 6px 4px 20px; padding: 14px; }
+}
+
+/* ---------- Vellum leaves ---------- */
+.panel {
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(255,255,255,.18), transparent 60%),
+    linear-gradient(180deg, var(--vellum), var(--vellum-2));
+  color: var(--ink);
+  padding: 16px 16px 18px;
+  box-shadow: 0 1px 0 rgba(255,255,255,.08) inset, 0 10px 26px var(--shadow);
+  position: relative;
+  min-width: 0;
+}
+.panel::before {
+  content: ""; position: absolute; inset: 6px; border: 1px solid var(--rule); pointer-events: none;
+}
+.panel h2 {
+  margin: 0 0 2px; font-family: var(--display); font-weight: 400; font-size: var(--step-2); line-height: 1.1;
+  text-wrap: balance;
+}
+.panel .lede { margin: 0 0 12px; font-style: italic; color: var(--ink-soft); font-size: .95rem; }
+.section { display: grid; gap: 9px; padding-top: 12px; margin-top: 12px; border-top: 1px solid var(--rule); }
+.section > h3 {
+  margin: 0; font-family: var(--body); font-weight: 600; font-size: var(--step-0);
+  font-variant-caps: all-small-caps; letter-spacing: .12em; color: var(--ink-soft);
+  display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+}
+.section > h3 small { font-weight: 400; letter-spacing: .04em; font-variant-caps: normal; font-style: italic; font-size: .85rem; }
+
+/* ---------- Colour pots ---------- */
+.suite-row { display: flex; gap: 8px; align-items: center; }
+select, input[type="text"] {
+  width: 100%; min-width: 0; background: var(--field); border: 1px solid var(--rule); padding: 5px 8px; border-radius: 2px;
+}
+.pots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(62px, 1fr)); gap: 10px 6px; }
+.pot {
+  display: grid; justify-items: center; gap: 3px; background: none; border: 0; padding: 4px 2px; cursor: pointer;
+  border-radius: 3px; font-size: .78rem; line-height: 1.1; text-align: center; color: var(--ink);
+}
+.pot .well {
+  width: 44px; height: 44px; border-radius: 50%; position: relative;
+  box-shadow: inset 0 3px 6px rgba(0,0,0,.35), 0 0 0 3px var(--vellum), 0 0 0 4px rgba(0,0,0,.25), 0 3px 5px var(--shadow);
+}
+.pot .well::after {
+  content: ""; position: absolute; inset: 7px 12px auto auto; width: 10px; height: 6px; border-radius: 50%;
+  background: rgba(255,255,255,.45); filter: blur(1px);
+}
+.pot.clear .well {
+  background:
+    repeating-linear-gradient(45deg, rgba(120,140,150,.18) 0 4px, rgba(255,255,255,.2) 4px 8px), #dfe5e0 !important;
+}
+.pot[aria-pressed="true"] .well { box-shadow: inset 0 3px 6px rgba(0,0,0,.35), 0 0 0 3px var(--vellum), 0 0 0 5px var(--gilt), 0 3px 8px var(--shadow); }
+.pot[aria-pressed="true"] .pname { color: var(--sel); font-weight: 600; }
+.pot .pname { max-width: 72px; overflow-wrap: anywhere; }
+.grind { display: flex; gap: 8px; align-items: center; }
+.grind input[type="color"] { width: 40px; height: 32px; border: 1px solid var(--rule); background: var(--field); padding: 2px; border-radius: 2px; flex: none; }
+
+/* ---------- Sliders ---------- */
+.ctl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1px 8px; align-items: baseline; }
+.ctl label { font-size: .95rem; }
+.ctl output { font-size: .8rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; font-style: italic; }
+.ctl input[type="range"] { grid-column: 1 / -1; width: 100%; }
+.ctl .hint { grid-column: 1 / -1; font-size: .78rem; color: var(--ink-soft); font-style: italic; margin-top: -2px; }
+input[type="range"] { accent-color: var(--sel); height: 18px; margin: 0; }
+.check { display: flex; gap: 8px; align-items: flex-start; font-size: .93rem; }
+.check input { accent-color: var(--sel); margin-top: 4px; }
+
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--rule); border-radius: 2px; overflow: hidden; }
+.seg button {
+  flex: 1 1 auto; border: 0; background: transparent; padding: 4px 8px; cursor: pointer; font-size: .86rem;
+  border-right: 1px solid var(--rule);
+}
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--sel); color: var(--vellum); }
+
+/* ---------- Workspace ---------- */
+.workspace { display: grid; gap: 14px; }
+.plate-head {
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px;
+  color: var(--on-morocco);
+}
+.plate-head h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: var(--step-2); color: var(--gilt-hi); }
+.plate-head h2 .pno { color: var(--on-morocco-soft); font-size: .8em; margin-right: 8px; }
+.caption { margin: 0; font-family: var(--italic); font-style: italic; color: var(--on-morocco-soft); min-height: 1.4em; }
+
+.trough {
+  position: relative;
+  padding: clamp(10px, 2.2vw, 22px);
+  border-radius: 4px;
+  background:
+    repeating-linear-gradient(92deg, rgba(0,0,0,.08) 0 2px, transparent 2px 9px),
+    repeating-linear-gradient(88deg, rgba(255,255,255,.05) 0 1px, transparent 1px 23px),
+    linear-gradient(180deg, var(--oak), var(--oak-dark));
+  box-shadow: 0 18px 34px var(--shadow), inset 0 1px 0 rgba(255,255,255,.18), inset 0 -2px 0 rgba(0,0,0,.35);
+}
+.trough::after {
+  content: ""; position: absolute; inset: clamp(10px, 2.2vw, 22px); pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.45), inset 0 6px 16px rgba(0,0,0,.45), inset 0 -2px 10px rgba(255,255,255,.08);
+}
+.bath { position: relative; aspect-ratio: 3 / 2; width: 100%; max-width: 100%; overflow: hidden; background: #d9d2bd; touch-action: none; }
+.bath canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#overlay { pointer-events: none; }
+.bath.tool-drop, .bath.tool-whisk, .bath.tool-turps { cursor: crosshair; }
+.bath.tool-stylus, .bath.tool-breath { cursor: none; }
+.bath.tool-comb, .bath.tool-wave, .bath.tool-curl { cursor: grab; }
+.viewtab {
+  position: absolute; top: 0; right: clamp(16px, 4vw, 40px); transform: translateY(-62%); z-index: 3;
+  display: flex; gap: 0; box-shadow: 0 3px 8px var(--shadow);
+}
+.viewtab button {
+  border: 1px solid var(--gilt-lo); background: linear-gradient(180deg, #e9cf86, #b48d3c); color: #2b1f16;
+  padding: 3px 12px; font-variant-caps: all-small-caps; letter-spacing: .1em; cursor: pointer; font-size: .92rem;
+}
+.viewtab button[aria-pressed="false"] { background: linear-gradient(180deg, #6b4a2c, #4a311c); color: #e8d6a8; }
+.sheet-anim {
+  position: absolute; inset: 0; z-index: 4; pointer-events: none; opacity: 0;
+  background:
+    repeating-linear-gradient(0deg, rgba(120,100,70,.06) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, #f3ead6, #e8dcc0);
+  box-shadow: 0 30px 60px rgba(0,0,0,.45);
+  transform-origin: 0% 50%;
+}
+.no-gl {
+  position: absolute; inset: 0; display: grid; place-items: center; padding: 20px; text-align: center;
+  background: var(--vellum); color: var(--ink); font-style: italic;
+}
+
+/* Tool rack */
+.rack {
+  display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px;
+  padding: 10px; background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.1));
+  border-top: 2px solid var(--gilt-lo); box-shadow: inset 0 2px 10px rgba(0,0,0,.35);
+}
+@media (max-width: 760px) { .rack { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.tool {
+  display: grid; justify-items: center; gap: 2px; padding: 8px 2px 6px; cursor: pointer;
+  border: 1px solid transparent; border-radius: 3px; background: transparent; color: var(--on-morocco);
+  font-variant-caps: all-small-caps; letter-spacing: .08em; font-size: .9rem; line-height: 1.05;
+}
+.tool svg { width: 30px; height: 30px; stroke: currentColor; fill: none; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+.tool small { font-variant-caps: normal; letter-spacing: 0; font-style: italic; font-size: .72rem; color: var(--on-morocco-soft); }
+.tool:hover { background: rgba(255,255,255,.05); }
+.tool[aria-pressed="true"] {
+  border-color: var(--gilt); color: var(--gilt-hi);
+  background: radial-gradient(ellipse at 50% 0%, rgba(241,217,143,.16), transparent 70%);
+}
+
+.tool-opts {
+  display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: end;
+  padding: 12px 14px; background: var(--vellum); color: var(--ink);
+  box-shadow: 0 8px 18px var(--shadow); position: relative;
+}
+.tool-opts .how { flex: 1 1 100%; margin: 0; font-style: italic; color: var(--ink-soft); font-size: .93rem; }
+.tool-opts .ctl { flex: 1 1 150px; min-width: 130px; }
+.tool-opts .btnrow { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.actions .spacer { flex: 1 1 auto; }
+.btn {
+  border: 1px solid var(--gilt-lo); background: rgba(0,0,0,.18); color: var(--on-morocco);
+  padding: 7px 14px; cursor: pointer; border-radius: 2px; font-size: .98rem;
+}
+.btn:hover { background: rgba(255,255,255,.07); }
+.btn.gilt {
+  background: linear-gradient(180deg, var(--gilt-hi), var(--gilt) 55%, var(--gilt-lo));
+  color: #2a1d10; border-color: #6f5320; font-weight: 600; letter-spacing: .02em;
+  box-shadow: 0 3px 10px var(--shadow), inset 0 1px 0 rgba(255,255,255,.5);
+}
+.btn.gilt:hover { filter: brightness(1.06); }
+.btn.small { padding: 3px 9px; font-size: .88rem; }
+.btn.ink { background: var(--field); color: var(--ink); border-color: var(--rule); }
+.btn.ink:hover { background: var(--vellum-2); }
+.btn:disabled { opacity: .5; cursor: default; }
+
+/* Drying rack */
+.drying {
+  position: relative; padding: 26px 10px 12px; min-height: 120px;
+  background: linear-gradient(180deg, rgba(0,0,0,.22), rgba(0,0,0,.08));
+  border: 1px solid rgba(201,161,74,.25);
+}
+.drying::before { content: ""; position: absolute; left: 0; right: 0; top: 14px; height: 1px; background: var(--on-morocco-soft); opacity: .7; }
+.drying h3 {
+  position: absolute; top: -11px; left: 12px; margin: 0; padding: 0 8px; background: var(--morocco);
+  font-weight: 400; font-variant-caps: all-small-caps; letter-spacing: .14em; color: var(--on-morocco-soft); font-size: .95rem;
+}
+.sheets { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 6px; }
+.sheets .empty { color: var(--on-morocco-soft); font-style: italic; margin: 8px 4px; }
+.sheet-thumb { flex: none; position: relative; border: 0; padding: 0; background: none; cursor: pointer; transform-origin: 50% 0; }
+.sheet-thumb:nth-child(odd) { transform: rotate(-1.2deg); }
+.sheet-thumb:nth-child(even) { transform: rotate(1deg); }
+.sheet-thumb img { display: block; width: 132px; height: 88px; object-fit: cover; box-shadow: 0 6px 12px var(--shadow); }
+.sheet-thumb::before {
+  content: ""; position: absolute; top: -10px; left: 50%; width: 14px; height: 16px; margin-left: -7px;
+  background: linear-gradient(90deg, #8a6a27, #f1d98f, #8a6a27); border-radius: 2px; box-shadow: 0 2px 3px rgba(0,0,0,.4); z-index: 1;
+}
+.sheet-thumb span { display: block; margin-top: 4px; font-size: .78rem; color: var(--on-morocco-soft); font-style: italic; text-align: left; max-width: 132px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------- Pattern book ---------- */
+.book-tools { display: grid; gap: 8px; }
+.recipes { display: grid; gap: 4px; max-height: 1180px; overflow-y: auto; padding-right: 4px; margin-right: -4px; }
+@media (max-width: 1180px) { .recipes { max-height: 760px; } }
+.recipe {
+  display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 10px; align-items: start; text-align: left;
+  padding: 8px 6px; border: 0; border-bottom: 1px dotted var(--rule); background: transparent; cursor: pointer; border-radius: 2px;
+}
+.recipe:hover { background: rgba(125, 42, 29, .07); }
+.recipe[aria-current="true"] { background: rgba(125, 42, 29, .12); }
+.recipe .sw {
+  width: 76px; height: 51px; background: var(--vellum-2); box-shadow: 0 0 0 1px var(--rule), 0 2px 4px rgba(0,0,0,.2);
+  background-size: cover; background-position: center;
+}
+.recipe .rt { display: grid; gap: 1px; min-width: 0; }
+.recipe .rn { font-family: var(--display); font-size: 1.12rem; line-height: 1.1; }
+.recipe .ra { font-size: .78rem; color: var(--ink-soft); font-variant-caps: all-small-caps; letter-spacing: .08em; }
+.recipe .rd { font-size: .85rem; line-height: 1.3; color: var(--ink); }
+.recipe .rdel { justify-self: start; margin-top: 3px; }
+.trad-label {
+  margin: 10px 0 0; font-variant-caps: all-small-caps; letter-spacing: .16em; color: var(--sel); font-size: .92rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.trad-label::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+.save-row { display: flex; gap: 6px; }
+
+/* ---------- Colophon ---------- */
+.colophon {
+  margin-top: 30px; color: var(--on-morocco); display: grid; gap: 22px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  border-top: 1px solid var(--gilt-lo); padding-top: 18px;
+}
+.colophon h4 { margin: 0 0 6px; font-family: var(--display); font-weight: 400; font-size: 1.25rem; color: var(--gilt-hi); }
+.colophon p, .colophon li { margin: 0 0 6px; font-size: .93rem; color: var(--on-morocco); max-width: 62ch; }
+.colophon ul { margin: 0; padding-left: 18px; }
+.colophon a { color: var(--gilt-hi); }
+.colophon em { color: var(--on-morocco-soft); }
+
+/* ---------- Specimen modal ---------- */
+.modal {
+  position: fixed; inset: 0; z-index: 50; display: grid; place-items: center;
+  background: rgba(15, 6, 3, .72);
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  overflow-y: auto;
+}
+.modal-card {
+  width: min(1100px, 100%); background: linear-gradient(180deg, var(--vellum), var(--vellum-2)); color: var(--ink);
+  padding: 20px; box-shadow: 0 30px 70px rgba(0,0,0,.6); position: relative;
+  display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 22px;
+}
+@media (max-width: 820px) { .modal-card { grid-template-columns: minmax(0, 1fr); } }
+.modal-card h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: var(--step-2); }
+.modal-card .close { position: absolute; top: 10px; right: 10px; }
+.specimen-sheet img { width: 100%; display: block; box-shadow: 0 8px 18px rgba(0,0,0,.3); }
+.specimen-meta { margin: 6px 0 12px; color: var(--ink-soft); font-style: italic; }
+.specimen-side { display: grid; gap: 14px; align-content: start; }
+.modal-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Half-leather binding mock-up */
+.bound { display: grid; place-items: center; padding: 18px 0 10px; perspective: 1400px; }
+.volume {
+  position: relative; width: min(300px, 80%); aspect-ratio: 2 / 3; transform: rotateY(-24deg) rotateX(4deg);
+  transform-style: preserve-3d; box-shadow: 18px 22px 30px rgba(0,0,0,.45);
+}
+.volume .board { position: absolute; inset: 0; background-size: cover; background-position: 40% 50%; background-repeat: no-repeat; }
+.volume .board::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, rgba(0,0,0,.25), rgba(255,255,255,.08) 40%, rgba(0,0,0,.18)); }
+.volume .spine {
+  position: absolute; top: 0; bottom: 0; left: 0; width: 26%;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 17%, rgba(0,0,0,.35) 17% 17.6%, rgba(255,220,150,.25) 17.6% 18.3%, transparent 18.3% 22%),
+    linear-gradient(90deg, #2a0f0a, #5b241a 45%, #3a150e);
+  box-shadow: 2px 0 4px rgba(0,0,0,.4);
+}
+.volume .spine::after { content: ""; position: absolute; top: 0; bottom: 0; right: 5px; width: 1px; background: #d9b766; opacity: .8; }
+.volume .corner { position: absolute; width: 24%; aspect-ratio: 1; background: linear-gradient(135deg, #5b241a, #2a0f0a); }
+.volume .corner.tr { top: 0; right: 0; clip-path: polygon(0 0, 100% 0, 100% 100%); }
+.volume .corner.br { bottom: 0; right: 0; clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+.volume .label {
+  position: absolute; left: 3%; width: 20%; top: 24%; padding: 6px 0; text-align: center;
+  font-family: var(--display); color: #e8c96f; font-size: .7rem; line-height: 1.1; writing-mode: vertical-rl; transform: rotate(180deg);
+  border-top: 1px solid #c9a14a; border-bottom: 1px solid #c9a14a; letter-spacing: .08em;
+}
+.volume .edge { position: absolute; top: 2%; bottom: 2%; right: -9px; width: 9px; background: repeating-linear-gradient(90deg, #efe4c8 0 1px, #d9c9a2 1px 2px); transform: rotateY(90deg); transform-origin: left; }
+
+.toast {
+  position: fixed; left: 50%; bottom: max(20px, calc(env(safe-area-inset-bottom, 0px) + 12px)); transform: translateX(-50%); z-index: 60;
+  background: var(--vellum); color: var(--ink); padding: 9px 16px; border: 1px solid var(--gilt); box-shadow: 0 10px 24px rgba(0,0,0,.45);
+  font-style: italic; max-width: calc(100% - 32px);
+}
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* ================= v2 ================= */
+kbd {
+  font-family: var(--body); font-size: .7rem; font-variant-caps: normal; letter-spacing: 0;
+  padding: 0 4px; border: 1px solid currentColor; border-radius: 2px; opacity: .7; line-height: 1.3;
+}
+.rack { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+@media (max-width: 760px) { .rack { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.tool kbd { margin-top: 2px; }
+
+.section > h3 { flex-wrap: wrap; }
+/* plate head controls */
+.plate-head { align-items: center; }
+.plate-title { display: grid; gap: 2px; min-width: 0; flex: 1 1 360px; }
+.head-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* Tabs on the bench panel */
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--rule); margin-top: 6px; }
+.tabs button {
+  flex: 1 1 0; background: none; border: 1px solid transparent; border-bottom: 0; margin-bottom: -1px;
+  padding: 6px 4px 5px; cursor: pointer; color: var(--ink-soft); border-radius: 3px 3px 0 0;
+  font-variant-caps: all-small-caps; letter-spacing: .1em; font-size: 1.02rem;
+}
+.tabs button[aria-selected="true"] { background: var(--vellum); border-color: var(--rule); color: var(--sel); font-weight: 600; }
+.tab-note { margin: 10px 0 0; font-style: italic; font-size: .88rem; color: var(--ink-soft); }
+.tabpanel > .section:first-of-type { border-top: 0; margin-top: 4px; }
+
+/* The stage: colour strip beside the bath */
+.stage { display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: 12px; align-items: start; }
+.strip {
+  display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 12px 6px;
+  background: linear-gradient(180deg, rgba(0,0,0,.3), rgba(0,0,0,.12));
+  border: 1px solid rgba(201,161,74,.3); box-shadow: inset 0 2px 10px rgba(0,0,0,.35);
+  max-height: 100%; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin;
+}
+.strip .strip-label { font-variant-caps: all-small-caps; letter-spacing: .12em; color: var(--on-morocco-soft); font-size: .78rem; }
+.chip {
+  position: relative; flex: none; width: 36px; height: 36px; border-radius: 50%; border: 0; padding: 0; cursor: pointer;
+  box-shadow: inset 0 3px 6px rgba(0,0,0,.38), 0 0 0 2px rgba(0,0,0,.45);
+}
+.chip.clear { background: repeating-linear-gradient(45deg, rgba(120,140,150,.25) 0 4px, rgba(255,255,255,.25) 4px 8px), #dfe5e0 !important; }
+.chip[aria-pressed="true"] { box-shadow: inset 0 3px 6px rgba(0,0,0,.38), 0 0 0 2px var(--morocco-deep), 0 0 0 4px var(--gilt-hi); }
+.chip .key {
+  position: absolute; right: -7px; bottom: -6px; min-width: 14px; text-align: center;
+  font-size: .66rem; line-height: 1.25; padding: 0 2px; border-radius: 2px;
+  background: var(--morocco-deep); color: var(--on-morocco-soft); border: 1px solid var(--gilt-lo);
+}
+@media (max-width: 760px) {
+  .stage { grid-template-columns: minmax(0, 1fr); }
+  .strip { flex-direction: row; overflow-x: auto; overflow-y: hidden; padding: 10px 12px; }
+  .strip .strip-label { display: none; }
+}
+
+/* History bar */
+.side { display: grid; gap: 14px; align-content: start; min-width: 0; }
+.historybar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; color: var(--on-morocco); }
+.historybar label { font-variant-caps: all-small-caps; letter-spacing: .12em; color: var(--on-morocco-soft); }
+.historybar input[type="range"] { flex: 1 1 160px; min-width: 120px; accent-color: var(--gilt); }
+.historybar output { font-size: .85rem; color: var(--on-morocco-soft); font-variant-numeric: tabular-nums; min-width: 6.5em; text-align: right; }
+.historybar .hlabel { flex: 1 1 100%; margin: 0; font-style: italic; font-size: .92rem; color: var(--on-morocco-soft); min-height: 1.35em; }
+.historybar .hlabel.past { color: var(--gilt-hi); }
+
+/* Comb rack */
+.inhand { flex: 1 1 100%; margin: -4px 0 0; font-size: .92rem; display: flex; align-items: center; gap: 8px; }
+.inhand .dot { width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 0 1px var(--rule); }
+.combs { flex: 1 1 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 6px; }
+.comb-btn {
+  display: grid; gap: 1px; justify-items: start; text-align: left; padding: 5px 8px 6px; cursor: pointer;
+  border: 1px solid var(--rule); background: var(--field); border-radius: 2px; font-size: .88rem; line-height: 1.15;
+}
+.comb-btn svg { width: 100%; height: 16px; margin-bottom: 2px; stroke: var(--ink); stroke-width: 1.4; fill: none; }
+.comb-btn small { color: var(--ink-soft); font-style: italic; font-size: .76rem; }
+.comb-btn[aria-pressed="true"] { border-color: var(--sel); box-shadow: inset 0 0 0 1px var(--sel); background: var(--vellum); }
+.comb-btn[aria-pressed="true"] svg { stroke: var(--sel); }
+.dirs { display: flex; gap: 4px; align-items: center; }
+.dirs span { font-size: .92rem; margin-right: 4px; }
+.dirs button {
+  width: 36px; height: 30px; border: 1px solid var(--rule); background: var(--field); cursor: pointer; border-radius: 2px; font-size: 1.05rem;
+}
+.dirs button[aria-pressed="true"] { background: var(--sel); color: var(--vellum); border-color: var(--sel); }
+details.custom { flex: 1 1 100%; border-top: 1px dotted var(--rule); padding-top: 8px; }
+details.custom summary { cursor: pointer; font-style: italic; color: var(--ink-soft); }
+details.custom .grid { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 8px; }
+details.custom .grid .ctl { flex: 1 1 150px; }
+.selrow { display: grid; gap: 3px; flex: 1 1 150px; font-size: .95rem; }
+
+/* Keyboard legend */
+details.keys { color: var(--on-morocco); font-size: .9rem; }
+details.keys summary { cursor: pointer; font-variant-caps: all-small-caps; letter-spacing: .12em; color: var(--on-morocco-soft); }
+details.keys dl { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; margin: 8px 0 0; }
+details.keys dt { white-space: nowrap; }
+details.keys dt kbd { opacity: 1; color: var(--gilt-hi); border-color: var(--gilt-lo); }
+details.keys dd { margin: 0; color: var(--on-morocco-soft); }
+
+/* Invitation & guided first plate */
+.invite {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 10px 14px;
+  background: linear-gradient(180deg, var(--vellum), var(--vellum-2)); color: var(--ink);
+  border: 1px solid var(--gilt); box-shadow: 0 8px 18px var(--shadow);
+}
+.invite p { margin: 0; flex: 1 1 260px; }
+.invite p b { font-family: var(--display); font-weight: 400; font-size: 1.1rem; }
+.tour {
+  position: fixed; z-index: 55; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  width: min(370px, calc(100vw - 32px)); display: grid; gap: 8px; padding: 14px 16px 14px;
+  background: linear-gradient(180deg, var(--vellum), var(--vellum-2)); color: var(--ink);
+  border: 1px solid var(--gilt); box-shadow: 0 18px 44px rgba(0,0,0,.55);
+}
+.tour .tstep { margin: 0; font-variant-caps: all-small-caps; letter-spacing: .14em; color: var(--sel); font-size: .95rem; }
+.tour h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 1.35rem; line-height: 1.1; }
+.tour p { margin: 0; font-size: 1rem; }
+.tour .tprog { display: flex; gap: 5px; }
+.tour .tprog i { flex: 1; height: 3px; background: var(--rule); }
+.tour .tprog i.on { background: var(--sel); }
+.tour .tbtns { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+.tour-target { outline: 2px solid var(--gilt-hi) !important; outline-offset: 4px; animation: tourPulse 1.6s ease-in-out infinite; }
+@keyframes tourPulse { 50% { outline-color: rgba(241,217,143,.15); } }
+@media (max-width: 760px) {
+  .toast { bottom: auto; top: max(14px, env(safe-area-inset-top, 0px)); }
+}
+
+/* ================= Studio mode ================= */
+.workspace.studio {
+  position: fixed; inset: 0; z-index: 40; overflow: hidden;
+  background-color: var(--morocco);
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.05), transparent 60%), radial-gradient(ellipse at 100% 100%, rgba(0,0,0,.4), transparent 55%);
+  padding: max(12px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  display: grid; gap: 10px 18px;
+  grid-template-columns: minmax(0, 1fr) minmax(270px, 340px);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: "head head" "stage side" "rack side";
+}
+.workspace.studio .plate-head { grid-area: head; }
+.workspace.studio .stage { grid-area: stage; min-height: 0; display: flex; gap: 14px; align-items: center; justify-content: center; }
+.workspace.studio .strip { align-self: center; max-height: 100%; }
+.workspace.studio .trough { flex: none; }
+.workspace.studio .rack { grid-area: rack; }
+.workspace.studio .side { grid-area: side; overflow-y: auto; min-height: 0; padding-right: 4px; }
+.workspace.studio .drying, .workspace.studio .invite { display: none; }
+.workspace.studio .actions .btn { flex: 1 1 auto; }
+.workspace.studio .actions .spacer { display: none; }
+@media (max-width: 900px), (max-height: 520px) {
+  .workspace.studio {
+    overflow-y: auto; grid-template-columns: minmax(0, 1fr); grid-template-rows: none;
+    grid-template-areas: "head" "stage" "rack" "side";
+  }
+  .workspace.studio .stage { display: grid; }
+  .workspace.studio .side { overflow: visible; }
+}
+body.in-studio { overflow: hidden; }
+</style>
+<div class="page">
+  <header class="masthead">
+    <div class="mast-inner">
+      <div class="mast-title">
+        <p class="eyebrow">Bindery &amp; marbling room &middot; decorated papers made to order</p>
+        <h1>The Marbling Atelier</h1>
+        <p class="sub">Float colours on a bath of size, draw them through with stylus and comb, then lay down a sheet, as the Suminagashi, Ebru and European marblers did.</p>
+      </div>
+      <ol class="lineage" aria-label="Lineage of the craft">
+        <li><span>Echizen</span></li><li>suminagashi, 1112</li>
+        <li><span>Herat</span></li><li>kāghaz-e abrī, c. 1490</li>
+        <li><span>Istanbul</span></li><li>ebru, 1539</li>
+        <li><span>Amsterdam</span></li><li>first European account, 1616</li>
+        <li><span>London</span></li><li>Woolnough&rsquo;s <i>Art of Marbling</i>, 1853</li>
+      </ol>
+    </div>
+  </header>
+
+  <main class="bench">
+    <!-- ============ LEFT: THE BENCH (tabs) ============ -->
+    <aside class="panel pots" aria-labelledby="benchTitle">
+      <h2 id="benchTitle">The Bench</h2>
+      <p class="lede">Colours, the bath and the sheet.</p>
+      <div class="tabs" role="tablist" aria-label="Bench settings">
+        <button type="button" role="tab" id="tab-colour" aria-controls="panel-colour" aria-selected="true">Colour</button>
+        <button type="button" role="tab" id="tab-bath" aria-controls="panel-bath" aria-selected="false" tabindex="-1">Bath</button>
+        <button type="button" role="tab" id="tab-sheet" aria-controls="panel-sheet" aria-selected="false" tabindex="-1">Sheet</button>
+      </div>
+
+      <div class="tabpanel" role="tabpanel" id="panel-colour" aria-labelledby="tab-colour">
+        <p class="tab-note">Pigment ground with ox gall. Pick a pot here or from the strip beside the bath.</p>
+        <div class="section">
+          <h3><span>Suite of colours</span></h3>
+          <label class="sr-only" for="suiteSel">Suite of colours</label>
+          <select id="suiteSel"></select>
+          <div class="pots-grid" id="potsGrid" role="group" aria-label="Colour pots"></div>
+          <div class="grind">
+            <label class="sr-only" for="grindColor">New colour</label>
+            <input type="color" id="grindColor" value="#3a6e8f">
+            <button class="btn ink small" id="grindBtn" type="button">Grind a new pot</button>
+          </div>
+          <label class="check"><input type="checkbox" id="cycleChk" checked> <span>Move to the next pot after each colour, as marblers lay colours in sequence</span></label>
+        </div>
+        <div class="section">
+          <h3><span>In the colour</span><small>for what you drop next</small></h3>
+          <div class="ctl"><label for="oilR">Oil (French shell)</label><output id="oilO">none</output><input type="range" id="oilR" min="0" max="1" step="0.05" value="0"><span class="hint">Oil gives each drop a pale outline and a darker heart.</span></div>
+        </div>
+      </div>
+
+      <div class="tabpanel" role="tabpanel" id="panel-bath" aria-labelledby="tab-bath" hidden>
+        <p class="tab-note">The conditions of the bath change the next pass you make. The pigment settings change the bath straight away.</p>
+        <div class="section">
+          <h3><span>Conditions</span><small>for the next pass</small></h3>
+          <div class="ctl"><label for="gallR">Ox gall (spread)</label><output id="gallO"></output><input type="range" id="gallR" min="0.5" max="1.8" step="0.05" value="1"></div>
+          <div class="ctl"><label for="sizeR">Body of the size</label><output id="sizeO"></output><input type="range" id="sizeR" min="0.55" max="1.7" step="0.05" value="1"><span class="hint">Thin carrageenan cuts sharp lines; thick tragacanth drags more colour with each tine.</span></div>
+          <button class="btn ink small" id="reworkBtn" type="button">Work the last pattern again in these conditions</button>
+        </div>
+        <div class="section">
+          <h3><span>Pigment on the size</span><small>changes now</small></h3>
+          <div class="ctl"><label for="rimR">Edge pooling</label><output id="rimO"></output><input type="range" id="rimR" min="0" max="1" step="0.05" value="0.55"></div>
+          <div class="ctl"><label for="grainR">Grain of the pigment</label><output id="grainO"></output><input type="range" id="grainR" min="0" max="1" step="0.05" value="0.5"></div>
+        </div>
+      </div>
+
+      <div class="tabpanel" role="tabpanel" id="panel-sheet" aria-labelledby="tab-sheet" hidden>
+        <p class="tab-note">How the paper takes up the colour. These show in the proof as you change them.</p>
+        <div class="section">
+          <h3><span>Paper</span></h3>
+          <div class="seg" id="paperSeg" role="group" aria-label="Paper">
+            <button type="button" data-paper="0" aria-pressed="true">Laid</button>
+            <button type="button" data-paper="1" aria-pressed="false">Wove</button>
+            <button type="button" data-paper="2" aria-pressed="false">Kozo washi</button>
+            <button type="button" data-paper="3" aria-pressed="false">Blue sugar</button>
+          </div>
+          <div class="ctl"><label for="alumR">Alum mordant</label><output id="alumO"></output><input type="range" id="alumR" min="0" max="1" step="0.05" value="0.9"><span class="hint">Too little alum and the colours take up pale and patchy.</span></div>
+        </div>
+        <div class="section">
+          <h3><span>Laying and lifting</span></h3>
+          <div class="ctl"><label for="spanR">Spanish shift</label><output id="spanO"></output><input type="range" id="spanR" min="0" max="1" step="0.05" value="0"><span class="hint">Rocking the sheet as it is laid leaves shaded diagonal bands.</span></div>
+          <div class="ctl"><label for="dragR">Drag on lifting (Extra)</label><output id="dragO"></output><input type="range" id="dragR" min="0" max="1" step="0.05" value="0"></div>
+          <div class="ctl"><label for="airR">Air caught under the sheet</label><output id="airO"></output><input type="range" id="airR" min="0" max="1" step="0.05" value="0.1"></div>
+        </div>
+        <div class="section">
+          <h3><span>Finishing</span></h3>
+          <div class="ctl"><label for="ageR">Age and foxing</label><output id="ageO"></output><input type="range" id="ageR" min="0" max="1" step="0.05" value="0"></div>
+          <div class="ctl"><label for="burnR">Burnish with agate</label><output id="burnO"></output><input type="range" id="burnR" min="0" max="1" step="0.05" value="0.25"></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ============ CENTRE: THE TROUGH ============ -->
+    <section class="workspace" id="workspace" aria-label="Marbling trough">
+      <div class="plate-head">
+        <div class="plate-title">
+          <h2><span class="pno" id="plateNo">Plate I</span><span id="plateName">Bouquet</span></h2>
+          <p class="caption" id="caption" aria-live="polite"></p>
+        </div>
+        <div class="head-btns">
+          <button class="btn small" type="button" id="guideBtn">Guided first plate</button>
+          <button class="btn small" type="button" id="studioBtn" aria-pressed="false">Studio <kbd>F</kbd></button>
+        </div>
+      </div>
+
+      <div class="invite" id="invite" hidden>
+        <p><b>New to marbling?</b> Work a first plate in five short steps: throw, gel-git, comb, lay down, bind.</p>
+        <button class="btn gilt small" type="button" id="inviteYes">Begin</button>
+        <button class="btn ink small" type="button" id="inviteNo">Not now</button>
+      </div>
+
+      <div class="stage" id="stage">
+        <div class="strip" id="potStrip" role="group" aria-label="Colours in hand"></div>
+        <div class="trough" id="trough">
+          <div class="viewtab" role="group" aria-label="View">
+            <button type="button" id="viewBath" aria-pressed="true">The bath</button>
+            <button type="button" id="viewProof" aria-pressed="false">The proof</button>
+          </div>
+          <div class="bath tool-drop" id="bath">
+            <canvas id="gl" aria-label="The marbling bath. Use the tools below to drop and draw colour."></canvas>
+            <canvas id="overlay" aria-hidden="true"></canvas>
+            <div class="sheet-anim" id="sheetAnim"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rack" role="toolbar" aria-label="Marbler's tools" id="rack">
+        <button class="tool" type="button" data-tool="drop" aria-pressed="true">
+          <svg viewBox="0 0 32 32"><path d="M8 4l10 10"/><path d="M18 14c2 1 4 3 4 6 0 2-1 3-2 3s-3-1-4-3c-1-2 0-4 2-6z"/><path d="M25 22c1.6 2.2 2.4 3.6 2.4 4.6a2.4 2.4 0 0 1-4.8 0c0-1 .8-2.4 2.4-4.6z"/></svg>
+          Drop brush<small>a single drop</small><kbd>D</kbd></button>
+        <button class="tool" type="button" data-tool="whisk" aria-pressed="false">
+          <svg viewBox="0 0 32 32"><path d="M16 3v9"/><path d="M14 12h4"/><path d="M16 12l-8 15M16 12l-4 16M16 12v16M16 12l4 16M16 12l8 15"/><circle cx="6" cy="9" r=".8"/><circle cx="26" cy="7" r=".8"/><circle cx="24" cy="12" r=".6"/></svg>
+          Whisk<small>throw a spray</small><kbd>W</kbd></button>
+        <button class="tool" type="button" data-tool="stylus" aria-pressed="false">
+          <svg viewBox="0 0 32 32"><path d="M6 26L22 10"/><rect x="21" y="4" width="5" height="9" rx="1.5" transform="rotate(45 23.5 8.5)"/><path d="M4 28l2-2"/></svg>
+          Stylus<small>the biz, an awl</small><kbd>S</kbd></button>
+        <button class="tool" type="button" data-tool="comb" aria-pressed="false">
+          <svg viewBox="0 0 32 32"><rect x="4" y="6" width="24" height="5" rx="1"/><path d="M6 11v14M10 11v14M14 11v14M18 11v14M22 11v14M26 11v14"/></svg>
+          Combs<small>a rack of nine</small><kbd>C</kbd></button>
+        <button class="tool" type="button" data-tool="curl" aria-pressed="false">
+          <svg viewBox="0 0 32 32"><path d="M16 16c0-1.5 1.5-2.5 3-2 2 .6 2.5 3 1.5 4.6-1.4 2.4-4.8 2.6-6.8.8-2.6-2.2-2.4-6.4.2-8.6 3.2-2.8 8.4-2.2 11 1.2"/></svg>
+          Curl<small>French curl, snail</small><kbd>R</kbd></button>
+        <button class="tool" type="button" data-tool="breath" aria-pressed="false">
+          <svg viewBox="0 0 32 32"><path d="M16 28L5 12a14 14 0 0 1 22 0z"/><path d="M16 28L10 9M16 28V8M16 28l6-19"/></svg>
+          Fan<small>breath on the ink</small><kbd>B</kbd></button>
+        <button class="tool" type="button" data-tool="turps" aria-pressed="false">
+          <svg viewBox="0 0 32 32"><path d="M12 4h6v4l3 3v15a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2V11l3-3z"/><circle cx="25" cy="7" r=".9"/><circle cx="27" cy="12" r=".7"/><circle cx="24" cy="14" r=".6"/></svg>
+          Turpentine<small>open lace holes</small><kbd>T</kbd></button>
+      </div>
+
+      <div class="side" id="side">
+        <div class="tool-opts" id="toolOpts" aria-live="polite"></div>
+
+        <div class="historybar">
+          <button class="btn small" type="button" id="undoBtn">Undo</button>
+          <button class="btn small" type="button" id="redoBtn">Redo</button>
+          <label for="histR">History</label>
+          <input type="range" id="histR" min="0" max="0" step="1" value="0">
+          <output id="histO">0 passes</output>
+          <p class="hlabel" id="histLabel"></p>
+        </div>
+
+        <div class="actions">
+          <button class="btn" type="button" id="skimBtn">Skim the bath</button>
+          <button class="btn" type="button" id="replayBtn">Replay the working</button>
+          <button class="btn" type="button" id="randomBtn">Random plate</button>
+          <span class="spacer"></span>
+          <button class="btn gilt" type="button" id="layBtn">Lay down a sheet</button>
+        </div>
+
+        <details class="keys" id="keysBox">
+          <summary>Keyboard</summary>
+          <dl>
+            <dt><kbd>D</kbd> <kbd>W</kbd> <kbd>S</kbd> <kbd>C</kbd> <kbd>R</kbd> <kbd>B</kbd> <kbd>T</kbd></dt><dd>Drop brush, whisk, stylus, combs, curl, fan, turpentine</dd>
+            <dt><kbd>1</kbd>&ndash;<kbd>9</kbd>, <kbd>0</kbd></dt><dd>Colour pots in order; 0 is clear water</dd>
+            <dt><kbd>&larr;</kbd> <kbd>&uarr;</kbd> <kbd>&rarr;</kbd> <kbd>&darr;</kbd></dt><dd>Turn the comb</dd>
+            <dt><kbd>Ctrl</kbd> <kbd>Z</kbd> / <kbd>Shift</kbd></dt><dd>Undo, or redo with Shift</dd>
+            <dt><kbd>[</kbd> <kbd>]</kbd></dt><dd>Step back and forward through history</dd>
+            <dt><kbd>P</kbd></dt><dd>Switch between the bath and the proof</dd>
+            <dt><kbd>F</kbd></dt><dd>Studio mode; <kbd>Esc</kbd> leaves it</dd>
+            <dt><kbd>L</kbd></dt><dd>Lay down a sheet</dd>
+          </dl>
+        </details>
+      </div>
+
+      <div class="drying">
+        <h3>The drying line</h3>
+        <div class="sheets" id="sheets"><p class="empty">Pulled sheets hang here to dry. Lay down a sheet to take your first print.</p></div>
+      </div>
+    </section>
+
+    <!-- ============ RIGHT: PATTERN BOOK ============ -->
+    <aside class="panel book" aria-labelledby="bookTitle">
+      <h2 id="bookTitle">The Pattern Book</h2>
+      <p class="lede">Choose a pattern and watch it worked on the bath, step by step.</p>
+      <div class="book-tools">
+        <div class="seg" id="tradSeg" role="group" aria-label="Tradition">
+          <button type="button" data-trad="all" aria-pressed="true">All</button>
+          <button type="button" data-trad="japan" aria-pressed="false">Japan</button>
+          <button type="button" data-trad="ottoman" aria-pressed="false">Ottoman</button>
+          <button type="button" data-trad="europe" aria-pressed="false">Europe</button>
+          <button type="button" data-trad="yours" aria-pressed="false">Yours</button>
+        </div>
+        <label class="check"><input type="checkbox" id="ownColoursChk" checked> <span>Use each pattern&rsquo;s own colours (untick to work it in your pots)</span></label>
+      </div>
+      <div class="recipes" id="recipes"></div>
+      <div class="section">
+        <h3><span>Enter your bath in the book</span></h3>
+        <div class="save-row">
+          <label class="sr-only" for="saveName">Pattern name</label>
+          <input type="text" id="saveName" placeholder="Name your pattern" maxlength="40">
+          <button class="btn ink small" type="button" id="saveBtn">Enter</button>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="colophon">
+    <div>
+      <h4>On the craft</h4>
+      <p>Marbling floats colour on a thickened bath called the size. Each colour is mixed with ox gall, a surfactant, so a drop spreads into a disc and pushes every earlier colour aside into veins. Styluses, combs and rakes then draw the floating colour into patterns, and a sheet laid on the surface takes up the whole design in one print. European papers were mordanted with alum first; ebru and suminagashi papers are not.</p>
+    </div>
+    <div>
+      <h4>On the mathematics</h4>
+      <p>The bath here follows the model of Lu, Jaffer and colleagues (<em>Mathematical Marbling</em>, IEEE CG&amp;A, 2012). A drop of radius <i>r</i> at <i>C</i> moves each point <i>P</i> to <i>C</i> + (<i>P</i>&minus;<i>C</i>)&radic;(1 + <i>r</i>&sup2;/|<i>P</i>&minus;<i>C</i>|&sup2;). A tine moves points along its line by <i>z</i>&middot;<i>u</i><sup><i>d</i></sup>. Every stroke can be undone exactly, so each pixel is traced back through the whole history of the bath.</p>
+    </div>
+    <div>
+      <h4>Sources consulted</h4>
+      <ul>
+        <li>Richard J. Wolfe, <em>Marbled Paper: Its History, Techniques and Patterns</em>, 1990</li>
+        <li>Einen Miura, <em>The Art of Marbled Paper</em>, 1989</li>
+        <li><a href="https://content.lib.washington.edu/dpweb/patterns.html" target="_blank" rel="noopener">University of Washington, Decorated Paper patterns</a></li>
+        <li><a href="https://people.csail.mit.edu/jaffer/Marbling/Mathematics" target="_blank" rel="noopener">Aubrey Jaffer, Mathematics of Marbling</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/Paper_marbling" target="_blank" rel="noopener">Paper marbling, Wikipedia</a></li>
+      </ul>
+    </div>
+  </footer>
+</div>
+
+<div class="modal" id="specimen" hidden role="dialog" aria-modal="true" aria-labelledby="specTitle">
+  <div class="modal-card">
+    <button class="btn ink small close" type="button" id="specClose">Close</button>
+    <div class="specimen-sheet">
+      <h2 id="specTitle">Specimen</h2>
+      <p class="specimen-meta" id="specMeta"></p>
+      <img id="specImg" alt="The pulled marbled sheet">
+    </div>
+    <div class="specimen-side">
+      <div class="bound" aria-hidden="true">
+        <div class="volume">
+          <div class="board" id="specBoard"></div>
+          <div class="corner tr"></div><div class="corner br"></div>
+          <div class="spine"></div>
+          <div class="label" id="specLabel">Marbled</div>
+          <div class="edge"></div>
+        </div>
+      </div>
+      <p class="specimen-meta">Bound as boards in half morocco with corners.</p>
+      <div class="modal-actions">
+        <button class="btn gilt" type="button" id="specDownload">Save the sheet as PNG</button>
+        <button class="btn ink" type="button" id="specRestore">Return this bath to the trough</button>
+        <button class="btn ink" type="button" id="specRemove">Take down from the line</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tour" id="tour" hidden role="dialog" aria-labelledby="tourTitle" aria-live="polite">
+  <p class="tstep" id="tourStep">Step 1 of 5</p>
+  <div class="tprog" id="tourProg" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  <h3 id="tourTitle"></h3>
+  <p id="tourText"></p>
+  <div class="tbtns">
+    <button class="btn ink small" type="button" id="tourSkip">Leave the guide</button>
+    <button class="btn gilt small" type="button" id="tourNext">Next step</button>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+"use strict";
+/* =====================================================================
+   THE BATH ENGINE
+   Every stroke on the bath is an exactly invertible map of the plane
+   (after Lu, Jaffer et al., "Mathematical Marbling", 2012). The shader
+   traces each pixel backwards through the history of strokes until it
+   lands inside the drop of colour that put it there.
+   ===================================================================== */
+const TW = 1200, TH = 800;          // the bath, in tray units
+const OPF = 16;                     // floats per stroke record
+const TEXW = 1024;                  // texels per row of the stroke texture
+const OPS_PER_ROW = TEXW / 4;
+const MAX_ROWS = 64;
+const MAX_OPS = OPS_PER_ROW * MAX_ROWS;
+const LIVE_MAX = 520;               // strokes traced live before older ones are baked
+const CHUNK = 280;
+
+const OP = {
+  drop(x, y, r, rgb, o = {}) {
+    const kind = o.clear ? 1 : (o.metal ? 2 : 0);
+    return [1, x, y, r, 0, 0, 0, 0, rgb[0], rgb[1], rgb[2], kind, o.shell || 0, o.seed ?? Math.random(), 0, 0];
+  },
+  // tine line(s): point on a tine, angle of travel, displacement z, falloff lam, spacing (0 = single), wave amp/k/phase
+  comb(px, py, ang, z, lam, spacing = 0, A = 0, k = 0, ph = 0, pat = []) {
+    const p = (pat || []).slice(0, 3);
+    return [2, px, py, ang, z, lam, spacing, A, p.length, p[0] || 0, p[1] || 0, p[2] || 0, k, ph, 0, 0];
+  },
+  swirl(cx, cy, theta, R, cell = 0, alt = 0) {
+    return [3, cx, cy, theta, R, cell, alt, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  },
+  push(cx, cy, sigma, vx, vy) {
+    return [4, cx, cy, sigma, vx, vy, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  },
+  wave(ang, A, k, ph) {
+    return [5, ang, A, k, ph, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  }
+};
+// which float of a record carries its "strength", for animating a pull
+const GROW_INDEX = { 1: 3, 2: 4, 3: 3, 5: 2 };
+
+class OpList {
+  constructor(cap = 2048) { this.data = new Float32Array(cap * OPF); this.n = 0; this.dirty = 0; }
+  ensure(n) {
+    if (n * OPF <= this.data.length) return;
+    let c = this.data.length / OPF; while (c < n) c *= 2;
+    const d = new Float32Array(c * OPF); d.set(this.data.subarray(0, this.n * OPF)); this.data = d;
+  }
+  push(op) {
+    if (this.n >= MAX_OPS) return -1;
+    this.ensure(this.n + 1); this.data.set(op, this.n * OPF);
+    this.dirty = Math.min(this.dirty, this.n); return this.n++;
+  }
+  set(i, k, v) { this.data[i * OPF + k] = v; this.dirty = Math.min(this.dirty, i); }
+  get(i, k) { return this.data[i * OPF + k]; }
+  truncate(n) { if (n < this.n) { this.n = n; this.dirty = Math.min(this.dirty, n); } }
+  clear() { this.n = 0; this.dirty = 0; }
+  toArray() { return Array.from(this.data.subarray(0, this.n * OPF), v => Math.round(v * 1000) / 1000); }
+  load(arr) {
+    const n = Math.min(MAX_OPS, Math.floor(arr.length / OPF)); this.ensure(n);
+    this.data.set(arr.slice(0, n * OPF)); this.n = n; this.dirty = 0;
+  }
+}
+
+const VS = `#version 300 es
+void main(){ vec2 p = vec2(float((gl_VertexID << 1) & 2), float(gl_VertexID & 2)); gl_Position = vec4(p*2.0-1.0, 0.0, 1.0); }`;
+
+const FS = `#version 300 es
+precision highp float; precision highp int; precision highp sampler2D;
+uniform sampler2D uOps; uniform sampler2D uBase;
+uniform int uStart; uniform int uEnd; uniform int uHasBase; uniform int uMode; uniform int uFlip; uniform int uPaper;
+uniform vec2 uRes; uniform vec3 uSizeCol; uniform vec3 uPaperCol;
+uniform float uRim, uGrain, uAlum, uAge, uAir, uSpanish, uDrag, uBurnish, uSeed;
+out vec4 outColor;
+const vec2 TRAY = vec2(1200.0, 800.0);
+const vec4 EXT = vec4(-120.0, -120.0, 1440.0, 1040.0);
+vec4 opv(int i, int k){ int t = i*4 + k; return texelFetch(uOps, ivec2(t & 1023, t >> 10), 0); }
+float hash(vec2 p){ vec3 p3 = fract(vec3(p.xyx) * .1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
+float vnoise(vec2 p){ vec2 i = floor(p); vec2 f = fract(p); vec2 u = f*f*(3.0-2.0*f);
+  return mix(mix(hash(i), hash(i+vec2(1.0,0.0)), u.x), mix(hash(i+vec2(0.0,1.0)), hash(i+vec2(1.0,1.0)), u.x), u.y); }
+float fbm(vec2 p){ float s = 0.0, a = 0.5; for(int i=0;i<5;i++){ s += a*vnoise(p); p = p*2.03 + vec2(17.1, 9.7); a *= 0.5; } return s; }
+vec2 rot(vec2 d, float a){ float c = cos(a), s = sin(a); return vec2(c*d.x - s*d.y, s*d.x + c*d.y); }
+// the wake of a pin: a divergence-free dipole, so colour flows around it instead of piling up
+vec2 pin(vec2 d, vec2 v, float s2){ float g = exp(-dot(d,d)/s2); vec2 w = vec2(v.y, -v.x); return g*(v - (2.0/s2)*dot(w,d)*vec2(-d.y, d.x)); }
+
+vec4 walk(vec2 p, out float metal){
+  metal = 0.0;
+  for(int i = uEnd - 1; i >= uStart; i--){
+    vec4 a = opv(i, 0);
+    int type = int(a.x + 0.5);
+    if(type == 1){
+      vec2 d = p - a.yz; float L2 = dot(d,d); float r2 = a.w*a.w;
+      if(L2 < r2){
+        vec4 col = opv(i, 2); vec4 ex = opv(i, 3);
+        if(col.w > 0.5 && col.w < 1.5) return vec4(0.0);
+        float rr = sqrt(L2) / max(a.w, 1e-3);
+        vec3 c = col.rgb;
+        float g1 = vnoise(d*0.33 + ex.y*137.0);
+        float g2 = vnoise(d*1.4 + ex.y*71.0);
+        c *= 1.0 + uGrain*((g1-0.5)*0.18 + (g2-0.5)*0.12);
+        c *= 1.0 - uRim*0.42*smoothstep(0.70, 1.0, rr);
+        float sh = ex.x;
+        if(sh > 0.0){
+          float band = smoothstep(0.78, 0.9, rr) * (1.0 - smoothstep(0.95, 0.995, rr));
+          c *= 1.0 - 0.3*sh*(1.0 - rr*rr);
+          c = mix(c, vec3(0.96, 0.94, 0.88), band*sh*0.9);
+        }
+        if(col.w > 1.5) metal = 1.0;
+        return vec4(clamp(c, 0.0, 1.0), 1.0);
+      }
+      p = a.yz + d*sqrt(1.0 - r2/L2);
+    } else if(type == 2){
+      vec4 b = opv(i, 1); vec4 w = opv(i, 3);
+      vec2 m = vec2(cos(a.w), sin(a.w)); vec2 n = vec2(-m.y, m.x);
+      vec2 q = p - a.yz;
+      float s = dot(q, m); float t = dot(q, n);
+      if(b.w != 0.0) t -= b.w*sin(w.x*s + w.y);
+      float disp;
+      if(b.z > 0.0){
+        float u = mod(t, b.z); disp = b.x*(exp(-u/b.y) + exp(-(b.z-u)/b.y));
+        vec4 tp = opv(i, 2);
+        for(int j = 0; j < 3; j++){
+          if(float(j) < tp.x - 0.5){
+            float off = (j == 0 ? tp.y : (j == 1 ? tp.z : tp.w))*b.z;
+            float uj = mod(t - off, b.z); disp += b.x*(exp(-uj/b.y) + exp(-(b.z-uj)/b.y));
+          }
+        }
+      }
+      else disp = b.x*exp(-abs(t)/b.y);
+      s -= disp;
+      if(b.w != 0.0) t += b.w*sin(w.x*s + w.y);
+      p = a.yz + m*s + n*t;
+    } else if(type == 3){
+      vec4 b = opv(i, 1);
+      vec2 ctr = a.yz; float sgn = 1.0;
+      if(b.y > 0.0){
+        vec2 cell = floor((p - a.yz)/b.y); ctr = a.yz + (cell + 0.5)*b.y;
+        if(b.z > 0.5 && mod(cell.x + cell.y, 2.0) > 0.5) sgn = -1.0;
+      }
+      vec2 d = p - ctr; float r = length(d);
+      if(r < b.x){ float f = 1.0 - (r*r)/(b.x*b.x); p = ctr + rot(d, -sgn*a.w*f*f); }
+    } else if(type == 4){
+      vec4 b = opv(i, 1); vec2 c = a.yz; float s2 = a.w*a.w; vec2 v = b.xy;
+      vec2 d = p - c; float reach = 3.3*a.w + length(v);
+      if(dot(d,d) < reach*reach){
+        vec2 q = p - pin(d, v, s2);
+        for(int k = 0; k < 6; k++){ q = p - pin(q - c, v, s2); }
+        p = q;
+      }
+    } else if(type == 5){
+      vec2 m = vec2(cos(a.y), sin(a.y)); vec2 n = vec2(-m.y, m.x);
+      vec4 b = opv(i, 1);
+      p -= n*a.z*sin(a.w*dot(p, m) + b.x);
+    }
+  }
+  if(uHasBase == 1){
+    vec2 bu = (p - EXT.xy)/EXT.zw;
+    if(bu.x > 0.0 && bu.y > 0.0 && bu.x < 1.0 && bu.y < 1.0){
+      vec4 bc = texture(uBase, bu);
+      if(bc.a > 0.003) return vec4(bc.rgb/bc.a, bc.a);
+    }
+  }
+  return vec4(0.0);
+}
+
+void main(){
+  vec2 uv = gl_FragCoord.xy / uRes;
+  if(uFlip == 0) uv.y = 1.0 - uv.y;
+  vec2 p = uv*TRAY;
+  float metal;
+  if(uMode == 2){ vec4 c = walk(EXT.xy + uv*EXT.zw, metal); outColor = vec4(c.rgb*c.a, c.a); return; }
+  vec2 pp = p;
+  float sw = (p.x*0.55 + p.y)*0.085 + fbm(p*0.004)*2.6;
+  if(uMode == 1){
+    pp.y = mix(pp.y, 400.0 + (pp.y - 400.0)*0.45, uDrag);
+    pp.x += uDrag*5.0*sin(pp.y*0.07 + fbm(pp*0.01)*3.0);
+    pp.x += uSpanish*6.0*sin(sw);
+    pp.y += uSpanish*4.0*cos(sw);
+  }
+  vec4 c = walk(pp, metal);
+  vec3 col;
+  if(uMode == 0){
+    vec3 ground = uSizeCol*(0.95 + 0.07*fbm(p*0.004));
+    col = mix(ground, c.rgb, c.a*0.97);
+    float sheen = smoothstep(0.55, 0.85, fbm(p*0.0025 + vec2(3.0, 1.0)));
+    col += 0.035*sheen;
+    col += metal*(vnoise(p*0.9) - 0.35)*0.24;
+    vec2 e = min(uv, 1.0 - uv); float edge = min(e.x*1.5, e.y);
+    col *= 0.86 + 0.14*smoothstep(0.0, 0.05, edge);
+  } else {
+    vec3 paper = uPaperCol;
+    float tex = 1.0;
+    if(uPaper == 0){
+      tex -= 0.018*(0.5 + 0.5*sin(p.y*1.7));
+      tex -= 0.045*(1.0 - smoothstep(0.0, 1.3, abs(mod(p.x + 9.0, 64.0) - 32.0)));
+      tex += 0.03*(fbm(p*0.05) - 0.5);
+    } else if(uPaper == 1){
+      tex += 0.045*(fbm(p*0.08) - 0.5) + 0.03*(vnoise(p*0.7) - 0.5);
+    } else if(uPaper == 2){
+      float f1 = vnoise(vec2(p.x*0.025 + p.y*0.01, p.y*0.5));
+      float f2 = vnoise(rot(p, 1.1)*vec2(0.03, 0.55) + 7.0);
+      tex -= 0.055*smoothstep(0.72, 1.0, f1) + 0.045*smoothstep(0.74, 1.0, f2);
+      tex += 0.035*(fbm(p*0.04) - 0.5);
+    } else {
+      tex += 0.04*(fbm(p*0.07) - 0.5);
+      vec2 fc = floor(p/5.0);
+      if(hash(fc + 3.7) > 0.985) tex -= 0.12*(1.0 - smoothstep(0.3, 1.4, length(p - (fc + 0.5)*5.0)));
+    }
+    float mott = fbm(p*0.018 + 5.0);
+    float take = clamp(mix(0.40, 1.0, uAlum) + (mott - 0.5)*(1.0 - uAlum)*1.2, 0.0, 1.0);
+    float hole = 0.0;
+    if(uAir > 0.001){
+      float airN = fbm(p*0.011 + vec2(uSeed*13.0, uSeed*7.0));
+      float th = 0.80 - uAir*0.2;
+      hole = smoothstep(th, th + 0.012, airN);
+      vec2 cell = floor(p/9.0); float h = hash(cell + uSeed*31.0);
+      if(h > 1.0 - uAir*0.025){
+        vec2 cp = (cell + 0.3 + 0.4*vec2(hash(cell + 1.7), hash(cell + 3.1)))*9.0;
+        hole = max(hole, 1.0 - smoothstep(0.7, 2.0, length(p - cp)));
+      }
+    }
+    float a = c.a*take*(1.0 - hole);
+    vec3 pig = c.rgb;
+    float band = fract(sw/6.2831853);
+    pig *= 1.0 - uSpanish*0.55*pow(band, 3.0) + uSpanish*0.1*(1.0 - band);
+    pig += metal*(vnoise(p*0.9) - 0.3)*0.26;
+    col = mix(paper, pig, a);
+    col *= tex;
+    float vig = length((uv - 0.5)*vec2(1.0, 1.2));
+    col = mix(col, col*vec3(1.0, 0.93, 0.78), uAge*(0.5 + 0.7*vig));
+    float fox = smoothstep(0.64, 0.73, fbm(p*0.035 + 21.0))*smoothstep(0.35, 0.85, fbm(p*0.004 + 2.0));
+    col = mix(col, vec3(0.55, 0.37, 0.21), fox*uAge*0.5);
+    vec2 fd = floor(p/7.0);
+    if(hash(fd + 9.1) > 1.0 - uAge*0.012) col = mix(col, vec3(0.5, 0.33, 0.2), uAge*0.6*(1.0 - smoothstep(0.4, 1.6, length(p - (fd + 0.5)*7.0))));
+    col = mix(col, col*col*(3.0 - 2.0*col), uBurnish*0.35);
+    float glare = smoothstep(0.0, 1.0, 1.0 - abs(uv.x*0.7 - uv.y*0.5 - 0.1)*2.2);
+    col += uBurnish*0.06*glare;
+  }
+  outColor = vec4(clamp(col, 0.0, 1.0), 1.0);
+}`;
+
+class Renderer {
+  constructor(canvas) {
+    const gl = canvas.getContext("webgl2", { antialias: false, alpha: false, premultipliedAlpha: false, preserveDrawingBuffer: true });
+    if (!gl) throw new Error("WebGL2 unavailable");
+    this.gl = gl; this.canvas = canvas;
+    const sh = (type, src) => {
+      const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+      return s;
+    };
+    const prog = gl.createProgram();
+    gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+    this.prog = prog;
+    this.loc = {};
+    ["uOps", "uBase", "uStart", "uEnd", "uHasBase", "uMode", "uFlip", "uPaper", "uRes", "uSizeCol", "uPaperCol",
+     "uRim", "uGrain", "uAlum", "uAge", "uAir", "uSpanish", "uDrag", "uBurnish", "uSeed"].forEach(n => this.loc[n] = gl.getUniformLocation(prog, n));
+    this.vao = gl.createVertexArray();
+    this.mainOps = this.makeOpsTex();
+    this.auxOps = this.makeOpsTex();
+    this.dummy = this.makeTarget(1, 1).tex;
+    this.maxTex = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+  }
+  makeOpsTex() {
+    const gl = this.gl, t = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, t);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, TEXW, MAX_ROWS, 0, gl.RGBA, gl.FLOAT, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    return t;
+  }
+  uploadOps(tex, data, fromOp, n) {
+    if (n <= 0 || fromOp >= n) return;
+    const gl = this.gl;
+    const row0 = Math.floor(fromOp / OPS_PER_ROW), row1 = Math.ceil(n / OPS_PER_ROW);
+    const need = row1 * TEXW * 4;
+    let src = data;
+    if (data.length < need) { src = new Float32Array(need); src.set(data.subarray(0, Math.min(data.length, need))); }
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, row0, TEXW, row1 - row0, gl.RGBA, gl.FLOAT, src.subarray(row0 * TEXW * 4, row1 * TEXW * 4));
+  }
+  makeTarget(w, h) {
+    const gl = this.gl, tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    const fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    return { tex, fb, w, h };
+  }
+  freeTarget(t) { if (!t) return; this.gl.deleteTexture(t.tex); this.gl.deleteFramebuffer(t.fb); }
+  draw(o) {
+    const gl = this.gl, L = this.loc, U = o.U;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, o.target ? o.target.fb : null);
+    gl.viewport(0, 0, o.w, o.h);
+    gl.useProgram(this.prog);
+    gl.bindVertexArray(this.vao);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, o.ops);
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, o.base ? o.base.tex : this.dummy);
+    gl.uniform1i(L.uOps, 0); gl.uniform1i(L.uBase, 1);
+    gl.uniform1i(L.uStart, o.start); gl.uniform1i(L.uEnd, o.end);
+    gl.uniform1i(L.uHasBase, o.base ? 1 : 0);
+    gl.uniform1i(L.uMode, o.mode); gl.uniform1i(L.uFlip, o.flip ? 1 : 0);
+    gl.uniform1i(L.uPaper, U.paper | 0);
+    gl.uniform2f(L.uRes, o.w, o.h);
+    gl.uniform3fv(L.uSizeCol, U.sizeCol); gl.uniform3fv(L.uPaperCol, U.paperCol);
+    gl.uniform1f(L.uRim, U.rim); gl.uniform1f(L.uGrain, U.grain); gl.uniform1f(L.uAlum, U.alum);
+    gl.uniform1f(L.uAge, U.age); gl.uniform1f(L.uAir, U.air); gl.uniform1f(L.uSpanish, U.spanish);
+    gl.uniform1f(L.uDrag, U.drag); gl.uniform1f(L.uBurnish, U.burnish); gl.uniform1f(L.uSeed, U.seed);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
+  read(target) {
+    const gl = this.gl, { w, h } = target, px = new Uint8Array(w * h * 4);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, target.fb);
+    gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, px);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    const c = document.createElement("canvas"); c.width = w; c.height = h;
+    c.getContext("2d").putImageData(new ImageData(new Uint8ClampedArray(px.buffer), w, h), 0, 0);
+    return c;
+  }
+  /* Render a whole stroke list off-screen, baking it in chunks so no single pass runs too long. */
+  renderOffscreen(data, n, w, h, U, mode) {
+    const gl = this.gl;
+    this.uploadOps(this.auxOps, data, 0, n);
+    // intermediate bakes cover the extended bath and never fall below a useful resolution
+    const bw = Math.min(this.maxTex, Math.max(720, Math.round(w * 1.6))), bh = Math.round(bw * 1040 / 1440);
+    const ch = Math.max(60, Math.min(420, Math.round(4.5e8 / (bw * bh))));
+    let base = null, spare = null, idx = 0;
+    while (n - idx > ch) {
+      const t = spare || this.makeTarget(bw, bh);
+      this.draw({ target: t, w: bw, h: bh, ops: this.auxOps, start: idx, end: idx + ch, base, mode: 2, flip: true, U });
+      gl.flush();
+      spare = base; base = t; idx += ch;
+    }
+    const out = this.makeTarget(w, h);
+    this.draw({ target: out, w, h, ops: this.auxOps, start: idx, end: n, base, mode, flip: true, U });
+    const canvas = this.read(out);
+    this.freeTarget(out); this.freeTarget(base); this.freeTarget(spare);
+    return canvas;
+  }
+}
+
+class Marbler {
+  constructor(canvas) {
+    this.r = new Renderer(canvas);
+    this.canvas = canvas;
+    this.ops = new OpList();
+    this.marks = [];          // op index where each pass begins
+    this.caps = [];           // a caption for each pass
+    this.viewEnd = null;      // when looking back through history: number of ops shown
+    this.viewK = null;        // ...and which pass that is
+    this.mode = 0;            // 0 bath, 1 proof
+    this.interacting = false;
+    this.needs = true;
+    this.U = {
+      sizeCol: [0.85, 0.82, 0.73], paperCol: [0.95, 0.91, 0.82], paper: 0,
+      rim: 0.55, grain: 0.5, alum: 0.9, age: 0, air: 0.1, spanish: 0, drag: 0, burnish: 0.25, seed: Math.random()
+    };
+    const bw = Math.min(2048, this.r.maxTex);
+    this.bakeT = [this.r.makeTarget(bw, Math.round(bw * 1040 / 1440)), this.r.makeTarget(bw, Math.round(bw * 1040 / 1440))];
+    this.bakeCur = -1; this.bakeIdx = 0;
+    this.onFrame = null;
+    const tick = () => { this.frame(); requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  }
+  get count() { return this.ops.n; }
+  get passes() { return this.marks.length; }
+  // which pass the bath is showing: passes() when at the present
+  get viewPassIndex() { return this.viewK === null ? this.marks.length : this.viewK; }
+  request() { this.needs = true; }
+  add(op) { const i = this.ops.push(op); this.needs = true; return i; }
+  set(i, k, v) { this.ops.set(i, k, v); this.needs = true; }
+  /* begin a new pass; working from an earlier point in history sets the later passes aside */
+  mark(cap = "") {
+    if (this.viewEnd !== null) this.truncatePasses(this.viewPassIndex);
+    this.marks.push(this.ops.n); this.caps.push(cap);
+  }
+  truncatePasses(k) {
+    k = Math.max(0, Math.min(k, this.marks.length));
+    if (k < this.marks.length) this.ops.truncate(this.marks[k]);
+    this.marks.length = k; this.caps.length = k; this.viewEnd = null; this.viewK = null; this.needs = true;
+  }
+  popPass() { if (this.marks.length) this.truncatePasses(this.marks.length - 1); }
+  viewPass(k) {
+    k = Math.max(0, k);
+    const v = k >= this.marks.length ? null : this.marks[k];
+    this.viewK = v === null ? null : k;
+    if (v !== this.viewEnd) { this.viewEnd = v; this.needs = true; }
+  }
+  commitView() { if (this.viewEnd !== null) this.truncatePasses(this.viewPassIndex); }
+  clear() { this.ops.clear(); this.marks = []; this.caps = []; this.viewEnd = null; this.viewK = null; this.needs = true; }
+  load(arr, marks, caps) {
+    this.ops.load(arr); this.marks = marks && marks.length ? marks.slice() : [0];
+    this.caps = this.marks.map((_, i) => (caps && caps[i]) || ""); this.viewEnd = null; this.viewK = null; this.needs = true;
+  }
+  sync() {
+    const n = this.ops.n, nEff = this.viewEnd === null ? n : Math.min(n, this.viewEnd);
+    if (this.ops.dirty < this.bakeIdx || nEff < this.bakeIdx) { this.bakeIdx = 0; this.bakeCur = -1; }
+    if (this.ops.dirty < Infinity) { this.r.uploadOps(this.r.mainOps, this.ops.data, this.ops.dirty, n); this.ops.dirty = Infinity; }
+    // bake one chunk per frame while the live history is long
+    const limit = this.interacting ? LIVE_MAX + 400 : LIVE_MAX;
+    if (nEff - this.bakeIdx > limit) {
+      const target = Math.min(nEff - 60, this.bakeIdx + CHUNK);
+      const dst = this.bakeCur === 0 ? 1 : 0, t = this.bakeT[dst];
+      this.r.draw({ target: t, w: t.w, h: t.h, ops: this.r.mainOps, start: this.bakeIdx, end: target,
+        base: this.bakeCur >= 0 ? this.bakeT[this.bakeCur] : null, mode: 2, flip: true, U: this.U });
+      this.bakeCur = dst; this.bakeIdx = target;
+      return nEff - this.bakeIdx <= limit + CHUNK; // still draw if close enough
+    }
+    return true;
+  }
+  frame() {
+    if (this.onFrame) this.onFrame();
+    if (!this.needs) return;
+    const ready = this.sync();
+    if (!ready) return; // keep baking next frame
+    this.needs = false;
+    const c = this.canvas;
+    const dpr = Math.min(2, Math.max(1.25, window.devicePixelRatio || 1));
+    const scale = this.interacting ? 0.6 : 1;
+    const w = Math.max(60, Math.round(c.clientWidth * dpr * scale)), h = Math.max(40, Math.round(c.clientHeight * dpr * scale));
+    if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
+    const end = this.viewEnd === null ? this.ops.n : Math.min(this.ops.n, this.viewEnd);
+    this.r.draw({ target: null, w, h, ops: this.r.mainOps, start: Math.min(this.bakeIdx, end), end,
+      base: this.bakeCur >= 0 ? this.bakeT[this.bakeCur] : null, mode: this.mode, flip: false, U: this.U });
+  }
+  setInteracting(v) {
+    this.interacting = v;
+    if (!v) this.needs = true;
+  }
+  // a full-resolution picture of the current bath (proof or bath view)
+  snapshot(w, h, mode = 1) {
+    return this.r.renderOffscreen(this.ops.data, this.ops.n, w, h, this.U, mode);
+  }
+  renderList(arr, w, h, U, mode = 1) {
+    const data = arr instanceof Float32Array ? arr : new Float32Array(arr);
+    return this.r.renderOffscreen(data, Math.floor(data.length / OPF), w, h, U, mode);
+  }
+}
+
+/* =====================================================================
+   COLOURS AND THE PATTERN BOOK
+   ===================================================================== */
+const hex2rgb = h => { const n = parseInt(h.slice(1), 16); return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255]; };
+const rgb2hex = c => "#" + c.map(v => Math.round(Math.max(0, Math.min(1, v)) * 255).toString(16).padStart(2, "0")).join("");
+const mixRgb = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
+function mulberry(seed) {
+  let a = seed >>> 0;
+  return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+const strSeed = s => { let h = 2166136261; for (const ch of s) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return h >>> 0; };
+
+const SUITES = [
+  { id: "ottoman", name: "Ottoman kitre", colours: [["Lahore indigo", "#24386a"], ["Turkish red", "#a3302a"], ["Orpiment", "#d6a335"], ["Verdigris", "#3f6a4a"], ["Lamp black", "#2a2421"], ["Ivory", "#ece2c9"]] },
+  { id: "dutch", name: "Dutch combed, c. 1700", colours: [["Prussian blue", "#1f3f73"], ["Carmine", "#a71f2c"], ["Weld yellow", "#ddb03a"], ["Sap green", "#4b7340"], ["Chalk white", "#f1ead8"]] },
+  { id: "victorian", name: "Victorian library", colours: [["Oxblood", "#6c1f1b"], ["Slate blue", "#4a5f7d"], ["Burnt umber", "#5e3f26"], ["Sage", "#8d9a6b"], ["Buff", "#d8c08f"], ["Ivory black", "#211d1b"]] },
+  { id: "florentine", name: "Florentine", colours: [["Lapis", "#204d93"], ["Coral", "#d26a4c"], ["Saffron", "#e3a42e"], ["Lichen", "#86964a"], ["Rose madder", "#c77b86"], ["Cream", "#f2e8cf"]] },
+  { id: "sumi", name: "Sumi and indigo", colours: [["Sumi", "#1c1b20"], ["Ai indigo", "#2b416f"], ["Beni red", "#a8342d"]] },
+  { id: "peacock", name: "Peacock", colours: [["Teal", "#1d6b68"], ["Verdigris", "#58a08c"], ["Ultramarine", "#2b3c91"], ["Gamboge", "#d39b25"], ["Tyrian plum", "#5c2a4b"], ["Pearl", "#efe9da"]] },
+  { id: "morris", name: "Arts and Crafts", colours: [["Madder", "#a3432f"], ["Woad", "#3e6079"], ["Weld", "#c8a63e"], ["Indigo", "#22314d"], ["Olive", "#6d6c35"]] },
+  { id: "abri", name: "Persian abrī", colours: [["Lapis", "#1f4b8f"], ["Rose", "#d48a8a"], ["Pistachio", "#a4b36b"], ["Gold ochre", "#c9952f"], ["Aubergine", "#4b2440"]] }
+];
+const CLEAR = { name: "Clear water", hex: "#dfe5e0", rgb: [0.87, 0.9, 0.88], clear: true };
+const BRONZE = { name: "Bronze", hex: "#b08a3e", rgb: hex2rgb("#b08a3e"), metal: true };
+const suitePal = id => (SUITES.find(s => s.id === id) || SUITES[0]).colours.map(([name, hex]) => ({ name, hex, rgb: hex2rgb(hex) }));
+
+const DIRS = { right: 0, left: Math.PI, down: Math.PI / 2, up: -Math.PI / 2 };
+const AREA = (TW + 80) * (TH + 80);
+
+/* The marbler's hand: builds a recipe as a list of captioned steps of strokes. */
+class Hand {
+  constructor(pal, seed, cond = { gall: 1, size: 1 }) {
+    this.pal = pal; this.rng = mulberry(seed); this.G = cond.gall; this.V = cond.size; this.steps = []; this.cur = null;
+  }
+  step(caption, kind = "seq", rate) { this.cur = { caption, kind, rate, ops: [] }; this.steps.push(this.cur); return this; }
+  op(o) { this.cur.ops.push(o); }
+  r(a = 1, b) { return b === undefined ? this.rng() * a : a + this.rng() * (b - a); }
+  col(i) { return typeof i === "object" ? i : this.pal[((i % this.pal.length) + this.pal.length) % this.pal.length]; }
+  drop(x, y, r, ci, o = {}) {
+    const c = this.col(ci);
+    this.op(OP.drop(x, y, r * this.G, c.rgb, { metal: c.metal, clear: c.clear, shell: o.shell || 0, seed: this.rng() }));
+  }
+  scatter(ci, n, rmin, rmax, o = {}) {
+    const m = o.margin ?? 60;
+    for (let k = 0; k < n; k++) {
+      const x = -m + this.rng() * (TW + 2 * m), y = -m + this.rng() * (TH + 2 * m);
+      this.drop(x, y, rmin + (rmax - rmin) * Math.pow(this.rng(), 1.4), ci, o);
+    }
+  }
+  /* Turkish stone: each colour thrown in turn, later colours spreading wider */
+  stone(cols, o = {}) {
+    const cover = o.cover ?? 1.25, r0 = o.r0 ?? 14, r1 = o.r1 ?? 34, N = cols.length;
+    cols.forEach((ci, j) => {
+      const c = this.col(ci);
+      this.step(o.caption ? o.caption(c, j) : `Throwing ${c.name.toLowerCase()} from the whisk`, "seq", o.rate || 9);
+      const rmin = r0 + (r1 - r0) * (N > 1 ? j / (N - 1) : 0), rmax = rmin * 1.8, avg = rmin * 1.3;
+      const share = (o.weights ? o.weights[j] : 1 / N) * cover;
+      const n = Math.max(6, Math.round(share * AREA / (Math.PI * avg * avg * this.G * this.G)));
+      this.scatter(ci, n, rmin, rmax, { margin: o.margin, shell: j === N - 1 ? (o.lastShell || 0) : (o.shell || 0) });
+    });
+  }
+  /* stylus drawn back and forth in parallel lines (gel-git) */
+  gelgit(axis, spacing, z, lam, caption) {
+    this.step(caption || (axis === "h" ? "Drawing the stylus back and forth across the bath" : "Drawing the stylus up and down the bath"), "grow", 5);
+    const off = this.r(spacing);
+    if (axis === "h") for (let y = off - spacing, k = 0; y < TH + spacing; y += spacing, k++) this.op(OP.comb(0, y, k % 2 ? Math.PI : 0, z, lam * this.V));
+    else for (let x = off - spacing, k = 0; x < TW + spacing; x += spacing, k++) this.op(OP.comb(x, 0, k % 2 ? -Math.PI / 2 : Math.PI / 2, z, lam * this.V));
+  }
+  comb(dir, spacing, z, lam, caption, wave, pat) {
+    this.step(caption || `Pulling a comb of ${Math.round(spacing / 4)} mm tines ${dir === "right" || dir === "left" ? "across" : (dir === "down" ? "down" : "up")} the bath`, "grow", 26);
+    const A = wave ? wave.A : 0, k = wave ? 2 * Math.PI / wave.wl : 0;
+    const px = spacing ? this.r(spacing) : this.r(TW * 0.3, TW * 0.7), py = spacing ? this.r(spacing) : this.r(TH * 0.3, TH * 0.7);
+    this.op(OP.comb(px, py, DIRS[dir], z, lam * this.V, spacing, A, k, this.r(6.28), pat));
+  }
+  curls(cell, R, theta, caption, alt = 0) {
+    this.step(caption || "Turning the stylus in rows of curls", "grow", 30);
+    this.op(OP.swirl(this.r(cell), this.r(cell), theta, R, cell, alt));
+  }
+  swirl(x, y, R, theta, caption) {
+    if (caption) this.step(caption, "grow", 30);
+    this.op(OP.swirl(x, y, theta, R, 0, 0));
+  }
+  waveShear(ang, A, wl, caption) {
+    this.step(caption || "Rocking the bath", "grow", 26);
+    this.op(OP.wave(ang, A, 2 * Math.PI / wl, this.r(6.28)));
+  }
+  /* a stylus stroke along a polyline */
+  stroke(pts, sigma, strength = 0.9) {
+    const step = sigma * 0.3;
+    for (let i = 1; i < pts.length; i++) {
+      const [x0, y0] = pts[i - 1], [x1, y1] = pts[i];
+      const L = Math.hypot(x1 - x0, y1 - y0), n = Math.max(1, Math.ceil(L / step));
+      const dx = (x1 - x0) / n, dy = (y1 - y0) / n;
+      for (let k = 0; k < n; k++) this.op(OP.push(x0 + dx * (k + 0.5), y0 + dy * (k + 0.5), sigma, dx * strength, dy * strength));
+    }
+  }
+  breath(n, caption) {
+    this.step(caption || "Fanning the surface", "seq", 1);
+    for (let i = 0; i < n; i++) {
+      const x = this.r(150, TW - 150), y = this.r(120, TH - 120), a = this.r(6.28), s = this.r(120, 220);
+      const v = s * 0.24;
+      for (let k = 0; k < 5; k++) this.op(OP.push(x + Math.cos(a) * v * k, y + Math.sin(a) * v * k, s, Math.cos(a) * v, Math.sin(a) * v));
+    }
+  }
+  turps(n, rmin = 2.2, rmax = 6, caption) {
+    this.step(caption || "Spattering turpentine to open the lace", "seq", 40);
+    for (let k = 0; k < n; k++) this.op(OP.drop(this.r(-20, TW + 20), this.r(-20, TH + 20), rmin + (rmax - rmin) * Math.pow(this.rng(), 2), CLEAR.rgb, { clear: true, seed: this.rng() }));
+  }
+  rings(cx, cy, cols, r, count) {
+    for (let k = 0; k < count; k++) this.drop(cx, cy, r, cols[k % cols.length]);
+  }
+  grid(cols, rows, fn) {
+    for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) fn((i + 0.5) * TW / cols, (j + 0.5) * TH / rows, i, j);
+  }
+}
+
+const pale = (pal, t = 0.62) => pal.map(c => ({ name: "pale " + c.name.toLowerCase(), rgb: mixRgb(c.rgb, [0.95, 0.93, 0.87], t), hex: c.hex }));
+const idx = (h, n) => Array.from({ length: n }, (_, i) => i);
+
+/* ---- the recipes ---- */
+const RECIPES = [
+  { id: "suminagashi", trad: "japan", name: "Suminagashi", aka: "floating ink", origin: "Japan", date: "1112 and earlier",
+    note: "Sumi and clear water touched to the bath in turn make rings within rings, which breath and a fan set drifting. No mordant, no comb.",
+    suite: "sumi", sheet: { paper: 2, alum: 1, spanish: 0, drag: 0, burnish: 0 },
+    build(h) {
+      h.step("Touching sumi and clear water to the bath in turn", "seq", 8);
+      const centres = [[h.r(250, 420), h.r(220, 360)], [h.r(760, 950), h.r(420, 580)], [h.r(520, 700), h.r(120, 260)]];
+      for (let k = 0; k < 64; k++) centres.forEach(([x, y], j) => {
+        const ink = k % 2 === 0;
+        const c = ink ? ((k % 12 === 6 && j % 2) ? 1 : (k % 18 === 10 ? 2 : 0)) : CLEAR;
+        h.drop(x + h.r(-5, 5), y + h.r(-5, 5), ink ? h.r(20, 26) : h.r(21, 29), c);
+      });
+      h.breath(6, "Fanning the surface so the rings drift");
+      h.swirl(h.r(400, 800), h.r(250, 550), 330, 1.1, "Breathing gently through a straw");
+    } },
+
+  { id: "abri", trad: "ottoman", name: "Abrī", aka: "kāghaz-e abrī, cloud paper", origin: "Herat and Bukhara", date: "late 15th century",
+    note: "The Persian cloud paper. Few colours on a thin size, loosely thrown and left to drift, give soft clouded stones.",
+    suite: "abri", sheet: { paper: 1, spanish: 0, drag: 0, burnish: 0.5 },
+    build(h) {
+      h.stone([3, 0, 1, 2], { cover: 1.2, r0: 26, r1: 60, rate: 4 });
+      h.breath(3, "Letting a draught move the colours");
+    } },
+
+  { id: "battal", trad: "ottoman", name: "Battal", aka: "Turkish stone, the ground of all ebru", origin: "Istanbul", date: "16th century",
+    note: "Colours flicked from rose-stem and horsehair brushes onto gum tragacanth. Each colour crowds the last into veins.",
+    suite: "ottoman", sheet: { paper: 1, spanish: 0, drag: 0, burnish: 0.55 },
+    build(h) { h.stone([4, 0, 1, 2, 3], { cover: 1.3, r0: 12, r1: 34 }); } },
+
+  { id: "gelgit", trad: "ottoman", name: "Gelgit", aka: "come and go", origin: "Istanbul", date: "16th century",
+    note: "A battal drawn through with the biz, an awl, back and forth in close parallel lines.",
+    suite: "ottoman", sheet: { paper: 1, spanish: 0, drag: 0, burnish: 0.55 },
+    build(h) { h.stone([4, 0, 1, 2, 5], { r0: 12, r1: 30 }); h.gelgit("h", 34, 46, 9); } },
+
+  { id: "tarakli", trad: "ottoman", name: "Taraklı", aka: "combed ebru", origin: "Istanbul", date: "17th century",
+    note: "Gelgit finished with a comb (tarak) drawn the other way, setting the colours in rows of small arches.",
+    suite: "ottoman", sheet: { paper: 1, spanish: 0, drag: 0, burnish: 0.55 },
+    build(h) { h.stone([4, 0, 1, 2, 3, 5], { r0: 10, r1: 26 }); h.gelgit("v", 40, 50, 10); h.comb("right", 14, 60, 4.2); } },
+
+  { id: "sal", trad: "ottoman", name: "Şal", aka: "shawl ebru", origin: "Istanbul", date: "18th century",
+    note: "Gelgit crossed by gelgit, then drawn in S-curves until it reads like a woven shawl.",
+    suite: "ottoman", sheet: { paper: 1, spanish: 0, drag: 0, burnish: 0.55 },
+    build(h) {
+      h.stone([1, 0, 2, 3, 5], { r0: 11, r1: 28 });
+      h.gelgit("v", 30, 34, 8); h.gelgit("h", 30, 34, 8);
+      h.comb("down", 70, 70, 16, "Drawing the comb down in S-curves", { A: 22, wl: 150 });
+    } },
+
+  { id: "bulbul", trad: "ottoman", name: "Bülbül yuvası", aka: "nightingale’s nest", origin: "Istanbul", date: "18th century",
+    note: "Spirals wound with the awl over a combed ground, from the rim of each nest in to its centre.",
+    suite: "ottoman", sheet: { paper: 1, spanish: 0, drag: 0, burnish: 0.55 },
+    build(h) {
+      h.stone([4, 0, 1, 2, 3, 5], { r0: 10, r1: 24 });
+      h.gelgit("v", 36, 44, 9); h.comb("right", 14, 50, 4);
+      h.curls(150, 74, 11, "Winding nests with the awl, from the rim inwards", 0);
+    } },
+
+  { id: "hatip", trad: "ottoman", name: "Hatip", aka: "the preacher’s ebru", origin: "Istanbul, after Hatip Mehmed Efendi", date: "d. 1773",
+    note: "Rings of colour dropped within colour on a pale battal, then drawn into hearts with a fine wire.",
+    suite: "ottoman", sheet: { paper: 1, spanish: 0, drag: 0, burnish: 0.55 },
+    build(h) {
+      const pal = h.pal; h.pal = pale(pal, 0.6);
+      h.stone([0, 2, 3, 5], { r0: 22, r1: 46, caption: c => `Laying a pale ground of ${c.name}` });
+      h.pal = pal;
+      h.step("Dropping rings of colour within colour", "seq", 4);
+      h.grid(5, 3, (x, y, i, j) => h.rings(x + (j % 2 ? 40 : -40), y, [1, 2, 0, 5], 16, 8));
+      h.step("Drawing the wire down through each ring to make a heart", "seq", 6);
+      h.grid(5, 3, (x, y, i, j) => { const cx = x + (j % 2 ? 40 : -40); h.stroke([[cx, y - 110], [cx, y + 85]], 10, 0.95); });
+    } },
+
+  { id: "cicek", trad: "ottoman", name: "Papatya", aka: "daisy ebru", origin: "Istanbul, after Mustafa Düzgünman", date: "20th century",
+    note: "Flower ebru as Necmeddin Okyay and Düzgünman taught it. A white drop, petals drawn inward with the awl, a yellow heart.",
+    suite: "ottoman", sheet: { paper: 1, spanish: 0, drag: 0, burnish: 0.55 },
+    build(h) {
+      const pal = h.pal; h.pal = pale(pal, 0.72);
+      h.stone([0, 3, 2], { r0: 24, r1: 46, caption: c => `Laying a soft ground of ${c.name}` });
+      h.pal = pal;
+      const spots = [[260, 250], [620, 210], [960, 300], [400, 560], [800, 560]];
+      h.step("Dropping white for each flower", "seq", 1);
+      spots.forEach(([x, y]) => h.drop(x, y, 66, { name: "white", rgb: [0.97, 0.96, 0.92] }));
+      h.step("Drawing petals inward with the awl", "seq", 8);
+      spots.forEach(([x, y]) => { for (let k = 0; k < 12; k++) { const a = k / 12 * 6.283; h.stroke([[x + Math.cos(a) * 100, y + Math.sin(a) * 100], [x + Math.cos(a) * 20, y + Math.sin(a) * 20]], 8, 0.9); } });
+      h.step("Setting a yellow heart in each", "seq", 1);
+      spots.forEach(([x, y]) => { h.drop(x, y, 17, 2); h.drop(x, y, 7, 4); });
+    } },
+
+  { id: "turkish", trad: "europe", name: "Turkish", aka: "Stone, Spot, Agate", origin: "Europe, from Ottoman models", date: "from the mid-17th century",
+    note: "The oldest Western pattern and the base of most others. Colours are thrown with a marbling brush; the first become the veins of the later.",
+    suite: "dutch", sheet: { paper: 0, spanish: 0, drag: 0 },
+    build(h) { h.stone([0, 1, 2, 3, 4], { cover: 1.3, r0: 12, r1: 34 }); } },
+
+  { id: "olddutch", trad: "europe", name: "Old Dutch", aka: "Wide comb, Arch", origin: "Holland and Germany", date: "17th–18th century",
+    note: "A narrow comb drawn across twice, then a widely spaced comb drawn down to form arches. The common paper of the age.",
+    suite: "dutch", sheet: { paper: 0, spanish: 0, drag: 0 },
+    build(h) {
+      h.stone([0, 1, 2, 3, 4], { r0: 9, r1: 20 });
+      h.comb("right", 18, 34, 5); h.comb("left", 18, 34, 5);
+      h.comb("down", 72, 90, 14, "Drawing the wide comb down to raise the arches");
+    } },
+
+  { id: "nonpareil", trad: "europe", name: "Nonpareil", aka: "matchless", origin: "France and England", date: "late 17th century onward",
+    note: "Colours dropped in sequence, a stylus drawn back and forth, then a fine comb of 2–3 mm tines pulled through once.",
+    suite: "victorian", sheet: { paper: 0, spanish: 0, drag: 0 },
+    build(h) { h.stone([5, 0, 1, 4, 3], { r0: 9, r1: 22 }); h.gelgit("h", 44, 70, 12); h.comb("down", 11, 44, 3.2); } },
+
+  { id: "bouquet", trad: "europe", name: "Bouquet", aka: "Peacock (Wolfe), Bukett", origin: "Germany and France", date: "late 18th century",
+    note: "A nonpareil base with a wide two-tooth comb carried up the bath in waves, fanning the columns into sprays.",
+    suite: "florentine", sheet: { paper: 0, spanish: 0, drag: 0 },
+    build(h) {
+      h.stone([0, 1, 2, 3, 4, 5], { r0: 9, r1: 22 }); h.gelgit("h", 42, 52, 10); h.comb("down", 11, 42, 3.2);
+      h.comb("up", 64, 72, 15, "Carrying the wide comb up the bath in waves", { A: 20, wl: 64 });
+    } },
+
+  { id: "peacock", trad: "europe", name: "Peacock", aka: "Pfauen", origin: "Germany", date: "19th century",
+    note: "A Turkish base combed into a grid, then a comb taken through in waves so each loop opens like the eye of a feather.",
+    suite: "peacock", sheet: { paper: 0, spanish: 0, drag: 0 },
+    build(h) {
+      h.stone([0, 2, 4, 1, 3, 5], { r0: 9, r1: 22 });
+      h.comb("right", 24, 40, 6); h.comb("down", 24, 40, 6);
+      h.comb("up", 52, 66, 13, "Taking the comb up in waves to open the eyes", { A: 19, wl: 52 });
+    } },
+
+  { id: "frenchcurl", trad: "europe", name: "French Curl", aka: "Snail", origin: "France", date: "18th century",
+    note: "Any finished base turned with a stylus or widely spaced comb into rows of curls.",
+    suite: "victorian", sheet: { paper: 0, spanish: 0, drag: 0 },
+    build(h) {
+      h.stone([5, 0, 1, 4, 3], { r0: 9, r1: 22 }); h.gelgit("h", 40, 50, 10); h.comb("down", 12, 40, 3.4);
+      h.curls(96, 47, 4.6, "Turning each curl with the stylus");
+    } },
+
+  { id: "spanish", trad: "europe", name: "Spanish", aka: "Wellen, Spanish moiré", origin: "Spain and Germany", date: "early 17th century",
+    note: "A Turkish base on which the sheet is rocked back and forth as it is laid, leaving shaded diagonal bands.",
+    suite: "victorian", sheet: { paper: 0, spanish: 0.85, drag: 0 },
+    build(h) { h.stone([5, 0, 1, 2, 4], { cover: 1.3, r0: 14, r1: 36 }); } },
+
+  { id: "shell", trad: "europe", name: "French Shell", aka: "Vogelaugen", origin: "France", date: "c. 1800",
+    note: "Like Turkish, but the last colour carries oil, so each spot dries with a white outline and a darker centre.",
+    suite: "dutch", sheet: { paper: 0, spanish: 0, drag: 0 },
+    build(h) { h.stone([3, 1, 2, 0], { cover: 1.35, r0: 12, r1: 36, lastShell: 0.95, weights: [0.2, 0.2, 0.2, 0.4] }); } },
+
+  { id: "stormont", trad: "europe", name: "Stormont", aka: "Neftli ebru", origin: "Dublin and France", date: "1750s–early 19th century",
+    note: "The last colour is thrown with turpentine, which opens it into a lacy net of fine holes. Edhem Efendi made the Turkish neftli.",
+    suite: "victorian", sheet: { paper: 0, spanish: 0, drag: 0 },
+    build(h) {
+      h.stone([0, 1, 3, 2], { cover: 1.25, r0: 12, r1: 34, weights: [0.2, 0.2, 0.2, 0.4] });
+      h.turps(2300, 2, 5.5, "Spattering the last colour with turpentine to open the lace");
+    } },
+
+  { id: "gloster", trad: "europe", name: "Gloster", aka: "often taken for Stormont", origin: "England", date: "19th century",
+    note: "A combed base, twice combed, with turpentine colour sprinkled over it to leave open spots.",
+    suite: "morris", sheet: { paper: 0, spanish: 0, drag: 0 },
+    build(h) {
+      h.stone([3, 0, 1, 2], { r0: 10, r1: 26 }); h.comb("right", 20, 34, 5.5); h.comb("down", 20, 34, 5.5);
+      h.turps(1300, 2.5, 6.5, "Sprinkling colour mixed with turpentine");
+    } },
+
+  { id: "italian", trad: "europe", name: "Italian", aka: "Vein, Hair Vein", origin: "Italy", date: "late 18th century",
+    note: "Colours thrown on, then a fine spray of dispersant constricts them into the hair veins of polished stone.",
+    suite: "victorian", sheet: { paper: 0, spanish: 0, drag: 0 },
+    build(h) {
+      h.stone([5, 1, 3, 4], { cover: 1.25, r0: 16, r1: 40 });
+      h.turps(1300, 9, 20, "Spraying a fine dispersant to draw the colours into veins");
+    } },
+
+  { id: "goldvein", trad: "europe", name: "Gold Vein", aka: "after the Le Bretons", origin: "Paris", date: "17th century",
+    note: "Worked as Turkish, but the first colour is bronze, so every later colour is edged with gold.",
+    suite: "victorian", sheet: { paper: 0, spanish: 0, drag: 0, burnish: 0.4 },
+    build(h) { h.stone([BRONZE, 0, 1, 3], { cover: 1.3, r0: 12, r1: 34, weights: [0.22, 0.26, 0.26, 0.26] }); } },
+
+  { id: "zebra", trad: "europe", name: "Zebra", aka: "", origin: "Germany and England", date: "late 19th century",
+    note: "A Turkish base combed both ways into a grid, then splashed with large drops that push the stripes aside.",
+    suite: "peacock", sheet: { paper: 0, spanish: 0, drag: 0 },
+    build(h) {
+      h.stone([4, 2, 0, 1, 5], { r0: 9, r1: 20 }); h.comb("right", 16, 34, 4.5); h.comb("down", 16, 34, 4.5);
+      h.step("Splashing on large drops", "seq", 1);
+      for (let k = 0; k < 16; k++) h.drop(h.r(-30, TW + 30), h.r(-30, TH + 30), h.r(40, 90), k % 3 === 0 ? 3 : 5);
+    } },
+
+  { id: "fountain", trad: "europe", name: "Fountain", aka: "", origin: "England", date: "19th century",
+    note: "A single-tooth comb drawn back and forth over a Turkish base, then pulled up so the spots gush like water.",
+    suite: "dutch", sheet: { paper: 0, spanish: 0, drag: 0 },
+    build(h) {
+      h.stone([0, 1, 2, 3, 4], { r0: 10, r1: 24, margin: 170 }); h.gelgit("v", 18, 30, 5.5);
+      h.comb("up", 130, 120, 28, "Pulling the wide rake up through the bath");
+    } },
+
+  { id: "serpentine", trad: "europe", name: "Serpentine", aka: "Waved", origin: "England", date: "mid-19th century",
+    note: "A Turkish base double combed into a grid, then drawn with a slightly wider comb in snake-like waves.",
+    suite: "morris", sheet: { paper: 0, spanish: 0, drag: 0 },
+    build(h) {
+      h.stone([3, 0, 1, 2, 4], { r0: 9, r1: 22 }); h.comb("right", 18, 34, 5); h.comb("down", 18, 34, 5);
+      h.comb("right", 46, 62, 15, "Drawing the comb across in snaking waves", { A: 26, wl: 160 });
+    } },
+
+  { id: "schrottel", trad: "europe", name: "Schrottel", aka: "Scrotel, small shot", origin: "Germany", date: "early 18th century",
+    note: "On a Turkish base, small spots of colour mixed with ox gall and oil dry dark, each in a white halo.",
+    suite: "morris", sheet: { paper: 0, spanish: 0, drag: 0 },
+    build(h) {
+      h.stone([2, 1, 4, 0], { cover: 1.3, r0: 14, r1: 34 });
+      h.step("Sprinkling small spots of oiled black", "seq", 12);
+      h.scatter(3, 170, 5, 12, { shell: 1 });
+    } },
+
+  { id: "antique", trad: "europe", name: "Antique Spot", aka: "Antique straight", origin: "Europe", date: "17th century",
+    note: "A combed pattern finished with a fine sprinkle of white dots.",
+    suite: "victorian", sheet: { paper: 0, spanish: 0, drag: 0 },
+    build(h) {
+      h.stone([5, 0, 1, 2, 3], { r0: 10, r1: 24 }); h.gelgit("v", 26, 34, 6); h.comb("right", 26, 40, 7);
+      h.step("Sprinkling fine white", "seq", 30);
+      h.scatter({ name: "white", rgb: [0.96, 0.94, 0.88] }, 650, 1.6, 4);
+    } }
+];
+
+const TRAD_LABEL = { japan: "Japan", ottoman: "Persia and the Ottomans", europe: "Europe", yours: "Your recipes" };
+
+/* ---- a random plate ---- */
+function randomPalette(rng) {
+  const h0 = rng() * 360, scheme = rng();
+  const n = 3 + Math.floor(rng() * 3), out = [];
+  for (let i = 0; i < n; i++) {
+    let h = scheme < 0.4 ? h0 + i * 28 : scheme < 0.75 ? h0 + (i % 2) * 180 + i * 12 : h0 + i * (360 / n);
+    h = ((h % 360) + 360) % 360;
+    const s = 0.3 + rng() * 0.45, l = 0.22 + rng() * 0.4;
+    out.push({ name: "colour " + (i + 1), rgb: hsl2rgb(h, s, l) });
+  }
+  if (rng() < 0.7) out.push({ name: "pale ground", rgb: hsl2rgb(h0, 0.2, 0.86 + rng() * 0.08) });
+  out.forEach(c => c.hex = rgb2hex(c.rgb));
+  return out;
+}
+function hsl2rgb(h, s, l) {
+  const k = n => (n + h / 30) % 12, a = s * Math.min(l, 1 - l);
+  const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+  return [f(0), f(8), f(4)];
+}
+const BASES = {
+  stone: { label: "stone", fn: h => h.stone(idx(0, h.pal.length), { r0: 10 + h.r(8), r1: 22 + h.r(18) }) },
+  fine: { label: "fine stone", fn: h => h.stone(idx(0, h.pal.length), { r0: 7, r1: 16 }) },
+  rings: { label: "rings", fn: h => {
+    h.step("Dropping rings at the centres", "seq", 4);
+    const cs = Array.from({ length: 2 + Math.floor(h.r(4)) }, () => [h.r(100, TW - 100), h.r(80, TH - 80)]);
+    for (let k = 0; k < 26; k++) cs.forEach(([x, y]) => h.drop(x, y, h.r(10, 18), k % 3 === 2 ? CLEAR : k));
+  } },
+  clouds: { label: "clouds", fn: h => h.stone(idx(0, h.pal.length), { r0: 24, r1: 60, rate: 4 }) }
+};
+const MANIPS = [
+  { label: "gel-git", fn: h => h.gelgit(h.r() < 0.5 ? "h" : "v", h.r(24, 50), h.r(30, 60), h.r(6, 12)) },
+  { label: "fine comb", fn: h => h.comb(["down", "right", "up", "left"][Math.floor(h.r(4))], h.r(9, 16), h.r(34, 56), h.r(3, 4.5)) },
+  { label: "wide comb", fn: h => h.comb(["down", "right", "up"][Math.floor(h.r(3))], h.r(50, 110), h.r(60, 140), h.r(12, 24)) },
+  { label: "waves", fn: h => h.comb(h.r() < 0.5 ? "up" : "right", h.r(44, 80), h.r(50, 80), h.r(12, 18), "Drawing a comb through in waves", { A: h.r(14, 30), wl: h.r(50, 170) }) },
+  { label: "curls", fn: h => { const c = h.r(80, 150); h.curls(c, c * 0.49, h.r(3, 9)); } },
+  { label: "a rocking", fn: h => h.waveShear(h.r(6.28), h.r(10, 30), h.r(120, 400)) },
+  { label: "breath", fn: h => h.breath(3) }
+];
+const FINISHES = [
+  { label: "shell spots", fn: h => { h.step("Sprinkling oiled spots", "seq", 10); h.scatter(0, 120, 8, 18, { shell: 0.9 }); } },
+  { label: "turpentine lace", fn: h => h.turps(800) },
+  { label: "veins", fn: h => h.turps(500, 5, 12, "Spraying dispersant into veins") },
+  { label: "splashes", fn: h => { h.step("Splashing on large drops", "seq", 1); for (let k = 0; k < 12; k++) h.drop(h.r(TW), h.r(TH), h.r(40, 80), k); } }
+];
+function randomPlate(seed, cond, ownPal) {
+  const rng = mulberry(seed);
+  const pick = a => a[Math.floor(rng() * a.length)];
+  const suite = rng() < 0.55 ? pick(SUITES) : null;
+  const pal = ownPal || (suite ? suitePal(suite.id) : randomPalette(rng));
+  const baseKey = pick(Object.keys(BASES)), base = BASES[baseKey];
+  const nm = Math.floor(rng() * 3.4), manips = [];
+  for (let i = 0; i < nm; i++) manips.push(pick(MANIPS));
+  const finish = rng() < 0.3 ? pick(FINISHES) : null;
+  const sheet = { paper: Math.floor(rng() * 4), spanish: rng() < 0.15 ? 0.7 : 0, drag: rng() < 0.08 ? 0.5 : 0 };
+  const words = [base.label, ...manips.map(m => m.label)];
+  if (finish) words.push(finish.label);
+  const name = words.length > 1 ? words.slice(0, -1).join(", ") + " and " + words[words.length - 1] : words[0];
+  return {
+    id: "random-" + seed, trad: "random", name: "Fancy " + ["stone", "comb", "wave", "curl", "spot"][seed % 5] + " № " + (seed % 997),
+    aka: name, origin: suite ? suite.name : "a palette of its own", date: "", sheet, palette: pal,
+    note: "A plate of " + name + ".",
+    build(h) { base.fn(h); manips.forEach(m => m.fn(h)); if (finish) finish.fn(h); }
+  };
+}
+
+/* =====================================================================
+   THE ATELIER (v2): pots, bench tabs, views and studio mode
+   ===================================================================== */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const PAPERS = [
+  { name: "laid paper", col: [0.95, 0.92, 0.83] },
+  { name: "wove paper", col: [0.97, 0.955, 0.91] },
+  { name: "kozo washi", col: [0.955, 0.94, 0.88] },
+  { name: "blue sugar paper", col: [0.74, 0.79, 0.83] }
+];
+const roman = n => { const t = [[1000, "M"], [900, "CM"], [500, "D"], [400, "CD"], [100, "C"], [90, "XC"], [50, "L"], [40, "XL"], [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]]; let s = ""; for (const [v, r] of t) while (n >= v) { s += r; n -= v; } return s; };
+const store = {
+  get(k, d) { try { const v = localStorage.getItem("marbling-atelier:" + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem("marbling-atelier:" + k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+};
+const reduceMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const S = {
+  tool: "drop", suiteId: "florentine", pots: [], potIdx: 0, customPots: [], plateSuite: null,
+  cycle: true, oil: 0, gall: 1, size: 1, ownColours: true, trad: "all",
+  plateNo: store.get("plateNo", 1), plateName: "", last: null, studio: false,
+  sheets: store.get("sheets", []), userRecipes: store.get("recipes", []),
+  opt: {
+    drop: { size: 22 }, whisk: { width: 110, size: 12, count: 22 }, stylus: { width: 9, pull: 0.9, spacing: 36 },
+    comb: { id: "nonpareil", dir: "down", len: 46, custom: { spacing: 30, reach: 6, len: 60, A: 0, wl: 120, pat: "even" } },
+    curl: { R: 46, twist: 4.5 }, breath: { width: 170, strength: 0.35 }, turps: { width: 120, size: 4, count: 80 }
+  }
+};
+let M = null;
+const toastEl = $("#toast");
+let toastTimer = 0;
+function toast(msg, ms = 3800) {
+  toastEl.textContent = msg; toastEl.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.hidden = true, ms);
+}
+
+/* ---------- Boot the bath ---------- */
+try {
+  M = new Marbler($("#gl"));
+} catch (err) {
+  const d = document.createElement("div"); d.className = "no-gl";
+  d.textContent = "This bath needs WebGL 2, which this browser has turned off. Try a current Chrome, Firefox, Edge or Safari.";
+  $("#bath").appendChild(d);
+  console.error(err);
+}
+
+/* ---------- Bench tabs ---------- */
+const TABS = ["colour", "bath", "sheet"];
+function showTab(name, focus) {
+  TABS.forEach(t => {
+    const tab = $("#tab-" + t), on = t === name;
+    tab.setAttribute("aria-selected", on ? "true" : "false");
+    tab.tabIndex = on ? 0 : -1;
+    $("#panel-" + t).hidden = !on;
+    if (on && focus) tab.focus();
+  });
+}
+TABS.forEach((t, i) => {
+  const tab = $("#tab-" + t);
+  tab.addEventListener("click", () => showTab(t));
+  tab.addEventListener("keydown", e => {
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+      e.preventDefault(); e.stopPropagation();
+      showTab(TABS[(i + (e.key === "ArrowRight" ? 1 : TABS.length - 1)) % TABS.length], true);
+    }
+  });
+});
+
+/* ---------- Colour pots: the bench grid and the strip beside the bath ---------- */
+const suiteSel = $("#suiteSel");
+function fillSuiteSelect() {
+  suiteSel.innerHTML = "";
+  if (S.plateSuite) suiteSel.add(new Option("Colours of this plate", "plate"));
+  SUITES.forEach(s => suiteSel.add(new Option(s.name, s.id)));
+  suiteSel.value = S.suiteId;
+}
+function setSuite(id, pal) {
+  if (id === "plate") S.plateSuite = pal || S.plateSuite;
+  S.suiteId = id;
+  fillSuiteSelect();
+  const base = id === "plate" ? S.plateSuite : suitePal(id);
+  S.pots = [...base, ...S.customPots, CLEAR, BRONZE];
+  S.potIdx = 0;
+  renderPots();
+}
+const wellBg = p => p.metal
+  ? "radial-gradient(circle at 35% 30%, #f6e2a0, #b08a3e 45%, #5e4316)"
+  : `radial-gradient(circle at 35% 30%, ${rgb2hex(mixRgb(p.rgb, [1, 1, 1], 0.25))}, ${rgb2hex(p.rgb)} 55%, ${rgb2hex(mixRgb(p.rgb, [0, 0, 0], 0.35))})`;
+const potKey = i => {
+  const p = S.pots[i];
+  if (p.clear) return "0";
+  if (p.metal) return "";
+  return i < 9 ? String(i + 1) : "";
+};
+function renderPots() {
+  const g = $("#potsGrid"), strip = $("#potStrip");
+  g.innerHTML = ""; strip.innerHTML = '<span class="strip-label">Colours</span>';
+  S.pots.forEach((p, i) => {
+    const on = i === S.potIdx ? "true" : "false";
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "pot" + (p.clear ? " clear" : "");
+    b.setAttribute("aria-pressed", on);
+    const w = document.createElement("span"); w.className = "well"; w.style.background = wellBg(p);
+    const n = document.createElement("span"); n.className = "pname"; n.textContent = p.name;
+    b.append(w, n);
+    b.addEventListener("click", () => selectPot(i));
+    g.appendChild(b);
+
+    const c = document.createElement("button");
+    c.type = "button"; c.className = "chip" + (p.clear ? " clear" : "");
+    c.style.background = wellBg(p); c.setAttribute("aria-pressed", on);
+    c.title = p.name; c.setAttribute("aria-label", p.name);
+    const k = potKey(i);
+    if (k) { const s = document.createElement("span"); s.className = "key"; s.textContent = k; c.appendChild(s); }
+    c.addEventListener("click", () => selectPot(i));
+    strip.appendChild(c);
+  });
+  updateInHand();
+}
+function selectPot(i, announce = true) {
+  if (i < 0 || i >= S.pots.length) return;
+  S.potIdx = i; renderPots();
+  if (announce) caption(`${pot().name} is in hand.`);
+  if (S.tool !== "drop" && S.tool !== "whisk") setTool(pot().clear ? "drop" : "whisk");
+}
+function updateInHand() {
+  const el = $("#inHand"); if (!el) return;
+  const p = pot();
+  el.querySelector(".dot").style.background = wellBg(p);
+  el.querySelector(".nm").textContent = p.name;
+}
+const pot = () => S.pots[S.potIdx] || S.pots[0];
+function nextPot() {
+  if (!S.cycle) return;
+  const n = S.pots.length - 2; // cycle through the pigments, not the clear water or bronze
+  if (S.potIdx < n) { S.potIdx = (S.potIdx + 1) % Math.max(1, n); renderPots(); }
+}
+const potsPal = () => S.pots.filter(p => !p.clear && !p.metal);
+suiteSel.addEventListener("change", () => setSuite(suiteSel.value));
+$("#grindBtn").addEventListener("click", () => {
+  const hex = $("#grindColor").value;
+  const p = { name: "Your colour " + roman(S.customPots.length + 1), hex, rgb: hex2rgb(hex) };
+  S.customPots.push(p);
+  const at = S.pots.length - 2;
+  S.pots.splice(at, 0, p); S.potIdx = at; renderPots();
+  toast(`${p.name} is ground and in its pot.`);
+});
+$("#cycleChk").addEventListener("change", e => S.cycle = e.target.checked);
+
+/* ---------- Sliders ---------- */
+function bindRange(id, outId, fmt, onInput) {
+  const r = $(id), o = $(outId);
+  const show = () => { o.textContent = fmt(parseFloat(r.value)); };
+  r.addEventListener("input", () => { show(); onInput(parseFloat(r.value)); });
+  show();
+  return { el: r, set(v) { r.value = v; show(); } };
+}
+const pct = v => Math.round(v * 100) + "%";
+const amount = v => v < 0.02 ? "none" : v < 0.35 ? "a little" : v < 0.7 ? "moderate" : "heavy";
+let proofHinted = false;
+function liveU(k, v, proof) {
+  if (!M) return;
+  M.U[k] = v; M.request();
+  if (proof && M.mode === 0) {
+    setView(1);
+    if (!proofHinted) { toast("Showing the proof, as the sheet would take it up. Press P or the tab above the trough to return to the bath."); proofHinted = true; }
+  }
+}
+const R = {
+  oil: bindRange("#oilR", "#oilO", amount, v => S.oil = v),
+  gall: bindRange("#gallR", "#gallO", v => v < 0.8 ? "sparing" : v > 1.25 ? "generous" : "measured", v => S.gall = v),
+  size: bindRange("#sizeR", "#sizeO", v => v < 0.8 ? "thin" : v > 1.25 ? "thick" : "middling", v => S.size = v),
+  rim: bindRange("#rimR", "#rimO", pct, v => liveU("rim", v)),
+  grain: bindRange("#grainR", "#grainO", pct, v => liveU("grain", v)),
+  alum: bindRange("#alumR", "#alumO", v => v > 0.85 ? "well mordanted" : v > 0.5 ? "light" : "starved", v => liveU("alum", v, true)),
+  spanish: bindRange("#spanR", "#spanO", amount, v => liveU("spanish", v, true)),
+  drag: bindRange("#dragR", "#dragO", amount, v => liveU("drag", v, true)),
+  air: bindRange("#airR", "#airO", amount, v => liveU("air", v, true)),
+  age: bindRange("#ageR", "#ageO", v => v < 0.02 ? "fresh" : v < 0.4 ? "a few decades" : v < 0.75 ? "a century" : "two centuries", v => liveU("age", v, true)),
+  burnish: bindRange("#burnR", "#burnO", amount, v => liveU("burnish", v, true))
+};
+function setPaper(i, toProof = true) {
+  $$("#paperSeg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.paper == i ? "true" : "false"));
+  if (!M) return;
+  M.U.paper = i; M.U.paperCol = PAPERS[i].col; M.request();
+  if (toProof) liveU("paper", i, true);
+}
+$$("#paperSeg button").forEach(b => b.addEventListener("click", () => setPaper(+b.dataset.paper)));
+function applySheet(sh = {}) {
+  const map = { alum: R.alum, spanish: R.spanish, drag: R.drag, air: R.air, age: R.age, burnish: R.burnish };
+  const sheet = { spanish: 0, drag: 0, ...sh };
+  for (const k in map) if (k in sheet && M) { M.U[k] = sheet[k]; map[k].set(sheet[k]); }
+  if ("paper" in sheet) setPaper(sheet.paper, false);
+  if (M) { M.U.seed = Math.random(); M.request(); }
+}
+
+/* ---------- Bath or proof ---------- */
+function setView(m) {
+  if (!M) return;
+  M.mode = m; M.request();
+  $("#viewBath").setAttribute("aria-pressed", m === 0 ? "true" : "false");
+  $("#viewProof").setAttribute("aria-pressed", m === 1 ? "true" : "false");
+}
+$("#viewBath").addEventListener("click", () => setView(0));
+$("#viewProof").addEventListener("click", () => setView(1));
+
+/* ---------- Studio mode: the bath across the whole screen ---------- */
+const ws = $("#workspace");
+function fitStudio() {
+  const tr = $("#trough");
+  if (!S.studio || matchMedia("(max-width: 900px), (max-height: 520px)").matches) { tr.style.width = ""; M && M.request(); drawOverlay(); return; }
+  const st = $("#stage").getBoundingClientRect(), strip = $("#potStrip").getBoundingClientRect();
+  const pad = parseFloat(getComputedStyle(tr).paddingLeft) || 16;
+  const availW = st.width - strip.width - 14, availH = st.height;
+  const bathW = Math.max(240, Math.min(availW - 2 * pad, (availH - 2 * pad) * 1.5));
+  tr.style.width = Math.floor(bathW + 2 * pad) + "px";
+  M && M.request(); drawOverlay();
+}
+function setStudio(on, viaFullscreen) {
+  if (on === S.studio) return;
+  S.studio = on;
+  ws.classList.toggle("studio", on);
+  document.body.classList.toggle("in-studio", on);
+  const b = $("#studioBtn");
+  b.setAttribute("aria-pressed", on ? "true" : "false");
+  b.innerHTML = on ? "Leave studio <kbd>Esc</kbd>" : "Studio <kbd>F</kbd>";
+  if (on) {
+    const de = document.documentElement;
+    if (!viaFullscreen && de.requestFullscreen && !document.fullscreenElement) {
+      try { const p = de.requestFullscreen({ navigationUI: "hide" }); if (p && p.catch) p.catch(() => {}); } catch (e) { /* the window-filling studio still works */ }
+    }
+    caption("Studio mode. The whole screen is the bath; Esc leaves it.");
+  } else if (document.fullscreenElement && document.exitFullscreen) {
+    try { const p = document.exitFullscreen(); if (p && p.catch) p.catch(() => {}); } catch (e) { }
+  }
+  requestAnimationFrame(() => requestAnimationFrame(fitStudio));
+  if (typeof tourRefresh === "function") tourRefresh();
+}
+$("#studioBtn").addEventListener("click", () => setStudio(!S.studio));
+document.addEventListener("fullscreenchange", () => {
+  if (!document.fullscreenElement && S.studio) setStudio(false, true);
+  else requestAnimationFrame(fitStudio);
+});
+window.addEventListener("resize", () => { fitStudio(); });
+
+/* =====================================================================
+   PLATES, THE PLAYER AND HISTORY
+   ===================================================================== */
+function setPlate(name, cap = "") {
+  S.plateName = name;
+  $("#plateNo").textContent = "Plate " + roman(S.plateNo);
+  $("#plateName").textContent = name;
+  $("#caption").textContent = cap;
+}
+const caption = t => $("#caption").textContent = t;
+/* every new pass goes through here: working from an earlier point in history sets later passes aside */
+function mark(cap) {
+  if (!M) return;
+  if (M.viewEnd !== null) {
+    const k = M.viewPassIndex, dropped = M.passes - k;
+    if (dropped > 0) toast(`Working on from pass ${k}. The ${dropped} later ${dropped === 1 ? "pass is" : "passes are"} set aside.`);
+  }
+  M.mark(cap);
+}
+
+/* ---------- The player: works a recipe stroke by stroke ---------- */
+const P = { active: false, steps: [], si: 0, oi: 0, t: 0, gi: -1, onDone: null, started: false };
+function play(steps, animate = true, onDone) {
+  stopPlayer(false);
+  if (!M) return;
+  if (!animate || reduceMotion()) {
+    steps.forEach(st => { mark(st.caption); st.ops.forEach(o => M.add(o)); });
+    if (steps.length) caption(steps[steps.length - 1].caption);
+    onDone && onDone(); return;
+  }
+  Object.assign(P, { active: true, steps, si: 0, oi: 0, t: 0, gi: -1, onDone, started: false });
+  M.setInteracting(true);
+}
+function stopPlayer(flush = true) {
+  if (!P.active) return;
+  if (flush && M) {
+    const st = P.steps[P.si];
+    if (st) {
+      if (P.gi >= 0) { const o = st.ops[P.oi]; M.set(P.gi, GROW_INDEX[o[0]], o[GROW_INDEX[o[0]]]); P.oi++; }
+      if (!P.started) mark(st.caption);
+      for (let k = P.oi; k < st.ops.length; k++) M.add(st.ops[k]);
+      for (let s = P.si + 1; s < P.steps.length; s++) { mark(P.steps[s].caption); P.steps[s].ops.forEach(o => M.add(o)); }
+    }
+  }
+  P.active = false; M && M.setInteracting(false);
+  const cb = P.onDone; P.onDone = null; if (flush && cb) cb();
+}
+function advancePlayer() {
+  if (!P.active) return;
+  const st = P.steps[P.si];
+  if (!st) { P.active = false; M.setInteracting(false); const cb = P.onDone; P.onDone = null; cb && cb(); return; }
+  if (!P.started) { mark(st.caption); caption(st.caption); P.started = true; }
+  if (st.kind === "grow") {
+    const o = st.ops[P.oi], gk = GROW_INDEX[o[0]];
+    if (gk === undefined) { M.add(o); P.oi++; }
+    else {
+      if (P.gi < 0) { const c = o.slice(); c[gk] = 0; P.gi = M.add(c); P.t = 0; }
+      P.t += 1 / (st.rate || 20);
+      const e = P.t >= 1 ? 1 : 1 - Math.pow(1 - P.t, 2.2);
+      M.set(P.gi, gk, o[gk] * e);
+      if (P.t >= 1) { P.gi = -1; P.oi++; }
+    }
+  } else {
+    const n = st.rate || 8;
+    for (let k = 0; k < n && P.oi < st.ops.length; k++) M.add(st.ops[P.oi++]);
+  }
+  if (P.oi >= st.ops.length) { P.si++; P.oi = 0; P.gi = -1; P.started = false; }
+}
+/* a short worked action from a tool panel button */
+function runSteps(build, done, pal = []) {
+  if (!M) return;
+  stopPlayer(true);
+  const h = new Hand(pal, (Math.random() * 1e9) | 0, condition());
+  build(h);
+  if (!S.plateName || S.plateName === "A fresh bath") setPlate("Your own plate", "");
+  play(h.steps, true, done);
+}
+
+/* ---------- Working a pattern from the book ---------- */
+const condition = () => ({ gall: S.gall, size: S.size });
+function workRecipe(rec, o = {}) {
+  if (!M) return;
+  stopPlayer(false);
+  const seed = o.seed ?? ((Math.random() * 1e9) | 0);
+  let pal;
+  if (rec.palette) { pal = rec.palette; setSuite("plate", pal); }
+  else if (o.pal) pal = o.pal;
+  else if (S.ownColours && rec.suite) { setSuite(rec.suite); pal = potsPal(); }
+  else pal = potsPal();
+  const h = new Hand(pal, seed, condition());
+  rec.build(h);
+  applySheet(rec.sheet);
+  M.clear();
+  setView(o.view ?? 0);
+  setPlate(rec.name, "");
+  S.last = { rec, seed, pal };
+  $$(".recipe").forEach(b => b.setAttribute("aria-current", b.dataset.id === rec.id ? "true" : "false"));
+  play(h.steps, o.animate !== false, () => caption(o.doneCaption || `${rec.name} is on the bath. Lay down a sheet to take the print.`));
+}
+$("#reworkBtn").addEventListener("click", () => {
+  if (!S.last) { toast("Work a pattern from the book first, then rework it here."); return; }
+  workRecipe(S.last.rec, { seed: S.last.seed, pal: S.last.pal, doneCaption: "Worked again in the new conditions of the bath." });
+});
+function replayOps(arr, marks, caps, name) {
+  const steps = [];
+  const total = arr.length / OPF;
+  const bounds = [...marks.filter(m => m < total), total];
+  if (bounds[0] !== 0) bounds.unshift(0);
+  for (let s = 0; s < bounds.length - 1; s++) {
+    const a = bounds[s], b = bounds[s + 1]; if (b <= a) continue;
+    const ops = []; for (let i = a; i < b; i++) ops.push(Array.from(arr.slice(i * OPF, (i + 1) * OPF)));
+    const t = ops[0][0];
+    const cap = caps[s] || (t === 1 ? "Dropping colour" : t === 4 ? "Drawing the stylus" : t === 3 ? "Turning curls" : "Pulling the comb");
+    const growable = ops.every(o => GROW_INDEX[o[0]] !== undefined && o[0] !== 1);
+    steps.push({ caption: cap, kind: growable ? "grow" : "seq", rate: growable ? (ops.length > 3 ? 5 : 24) : Math.max(2, Math.ceil(ops.length / 45)), ops });
+  }
+  M.clear();
+  setPlate(name, "");
+  play(steps, true, () => caption("The working is replayed."));
+}
+$("#replayBtn").addEventListener("click", () => {
+  if (!M || !M.count) { toast("The bath is clean. There is nothing to replay yet."); return; }
+  stopPlayer(true); M.commitView();
+  replayOps(M.ops.toArray(), M.marks.slice(), M.caps.slice(), S.plateName || "Your plate");
+});
+$("#randomBtn").addEventListener("click", () => {
+  const seed = (Math.random() * 1e6) | 0;
+  workRecipe(randomPlate(seed, condition()));
+});
+
+/* ---------- History: undo, redo and the slider ---------- */
+const histR = $("#histR"), histO = $("#histO"), histLabel = $("#histLabel");
+let histSeen = { p: -1, k: -1, n: -1 };
+function updateHistory(force) {
+  if (!M) return;
+  const p = M.passes, k = M.viewPassIndex;
+  if (!force && histSeen.p === p && histSeen.k === k && histSeen.n === M.count) return;
+  histSeen = { p, k, n: M.count };
+  histR.max = p; histR.value = k;
+  histO.textContent = p === 0 ? "a clean bath" : `pass ${k} of ${p}`;
+  const past = k < p;
+  histLabel.classList.toggle("past", past);
+  histLabel.textContent = k === 0 ? (p ? "Looking back at the clean bath." : "")
+    : (past ? `Looking back: ${M.caps[k - 1] || "a pass"}. Work on from here, or press Redo.` : `Last pass: ${M.caps[k - 1] || ""}`);
+  $("#undoBtn").disabled = k === 0;
+  $("#redoBtn").disabled = !past;
+}
+function goPass(k) {
+  if (!M) return;
+  if (P.active) stopPlayer(true);
+  finishAuto();
+  M.viewPass(Math.max(0, Math.min(M.passes, k)));
+  updateHistory(true);
+}
+function undo() {
+  if (!M) return;
+  if (P.active) stopPlayer(true);
+  finishAuto();
+  const k = M.viewPassIndex;
+  if (k === 0) { toast("Nothing left to undo."); return; }
+  goPass(k - 1);
+  caption(`Undone: ${M.caps[k - 1] || "the last pass"}.`);
+}
+function redo() {
+  if (!M) return;
+  const k = M.viewPassIndex;
+  if (k >= M.passes) { toast("Nothing to redo."); return; }
+  goPass(k + 1);
+  caption(`Redone: ${M.caps[k] || "a pass"}.`);
+}
+$("#undoBtn").addEventListener("click", undo);
+$("#redoBtn").addEventListener("click", redo);
+histR.addEventListener("input", () => { if (!M) return; M.setInteracting(true); goPass(+histR.value); });
+histR.addEventListener("change", () => { M && M.setInteracting(false); });
+$("#skimBtn").addEventListener("click", skim);
+function skim() {
+  if (!M) return;
+  stopPlayer(false); M.clear();
+  setView(0); setPlate("A fresh bath", "The surface is skimmed with a strip of newsprint. Throw your first colour.");
+  updateHistory(true);
+}
+
+/* =====================================================================
+   TOOLS: the rack, the comb rack, and working the bath by hand
+   ===================================================================== */
+const TINE_PATTERNS = { even: [], pairs: [0.3], threes: [0.22, 0.44], pairsingle: [0.2, 0.55] };
+const COMBS = [
+  { id: "nonpareil", name: "Nonpareil comb", note: "3 mm tines", spacing: 12, reach: 3.4, len: 46 },
+  { id: "fine", name: "Fine comb", note: "6 mm tines", spacing: 24, reach: 5, len: 52 },
+  { id: "dutch", name: "Dutch wide comb", note: "18 mm, for arches", spacing: 72, reach: 14, len: 90 },
+  { id: "rake", name: "Rake", note: "30 mm, for fountains", spacing: 120, reach: 26, len: 140 },
+  { id: "single", name: "Single tine", note: "one line, gel-git", spacing: 0, reach: 8, len: 70 },
+  { id: "bouquet", name: "Bouquet rake", note: "16 mm, carried in waves", spacing: 64, reach: 15, len: 72, A: 20, wl: 64 },
+  { id: "serpentine", name: "Serpentine comb", note: "12 mm, long waves", spacing: 46, reach: 15, len: 62, A: 26, wl: 160 },
+  { id: "bird", name: "Bird-wing comb", note: "tines in pairs", spacing: 60, reach: 5, len: 60, pat: [0.22] },
+  { id: "custom", name: "Your own comb", note: "set it below", custom: true }
+];
+const DIR_ARROWS = { down: "↓", right: "→", up: "↑", left: "←" };
+function combSpec() {
+  const o = S.opt.comb, c = COMBS.find(x => x.id === o.id) || COMBS[0];
+  if (c.custom) { const u = o.custom; return { ...c, spacing: u.spacing, reach: u.reach, len: o.len, A: u.A, wl: u.wl, pat: TINE_PATTERNS[u.pat] || [] }; }
+  return { ...c, len: o.len };
+}
+function combOp(spec, p, ang, z) {
+  return OP.comb(p[0], p[1], ang, z, spec.reach * S.size, spec.spacing, spec.A || 0, spec.A ? 2 * Math.PI / spec.wl : 0, 0, spec.pat || []);
+}
+function combGlyph(c) {
+  const W = 120, span = 240, sc = W / span;
+  let d = `M2 2.5H${W - 2}`;
+  const spacing = c.custom ? S.opt.comb.custom.spacing : c.spacing;
+  const pat = c.custom ? TINE_PATTERNS[S.opt.comb.custom.pat] : (c.pat || []);
+  const A = c.custom ? S.opt.comb.custom.A : c.A;
+  if (!spacing) d += `M${W / 2} 2.5V14`;
+  else for (let x0 = 0; x0 <= span; x0 += spacing) [0, ...pat].forEach(f => {
+    const x = (x0 + f * spacing) * sc + 2; if (x <= W - 2) d += `M${x.toFixed(1)} 2.5V${A ? 9 : 14}`;
+  });
+  let wave = "";
+  if (A) { wave = "M2 13"; for (let x = 2; x <= W - 2; x += 3) wave += `L${x} ${(12.5 + 2.6 * Math.sin(x / 7)).toFixed(1)}`; wave = `<path d="${wave}"/>`; }
+  return `<svg viewBox="0 0 ${W} 16" preserveAspectRatio="none" aria-hidden="true"><path d="${d}"/>${wave}</svg>`;
+}
+
+const TOOL_INFO = {
+  drop: "Click to touch the drop brush to the bath. Hold it down to let more colour run, and the drop spreads wider.",
+  whisk: "Click or drag to throw a spray of drops, as when the whisk is struck against a rod.",
+  stylus: "Drag the stylus through the floating colour. Its wake pulls the colours after it.",
+  comb: "Choose a comb and a direction, then click the bath to pull it from there. You can also drag to pull it by hand. Arrow keys turn the comb.",
+  curl: "Click a spot to turn a curl there, or press and drag sideways to twist it by hand. Drag right for clockwise.",
+  breath: "Drag to blow across the bath. A broad, gentle push, as the suminagashi masters used a fan or their breath.",
+  turps: "Click or drag to spatter turpentine. Each fleck opens a small hole in the floating colour."
+};
+const mm = v => Math.round(v / 4) + " mm";
+const FMT = {
+  size: mm, width: mm, spacing: mm, A: mm, wl: mm, R: mm, len: mm, pull: pct, strength: pct,
+  count: v => String(v), reach: v => v.toFixed(1), twist: v => v.toFixed(1) + " rad"
+};
+function ctlHTML(id, label, min, max, step, val, fmt) {
+  return `<div class="ctl"><label for="${id}">${label}</label><output id="${id}O">${fmt ? fmt(val) : val}</output><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}"></div>`;
+}
+const inHandHTML = '<p class="inhand" id="inHand"><span>Colour in hand:</span><span class="dot"></span><b class="nm"></b></p>';
+function renderToolOpts() {
+  const t = S.tool, o = S.opt[t], el = $("#toolOpts");
+  let h = `<p class="how">${TOOL_INFO[t]}</p>`;
+  if (t === "drop") h += inHandHTML + ctlHTML("o_size", "Size of drop", 6, 70, 1, o.size, mm);
+  if (t === "whisk") h += inHandHTML + ctlHTML("o_width", "Width of spray", 30, 300, 5, o.width, mm) + ctlHTML("o_size", "Size of drops", 3, 34, 1, o.size, mm) + ctlHTML("o_count", "Drops per throw", 4, 70, 1, o.count, FMT.count) +
+    `<div class="btnrow"><button class="btn ink small" type="button" id="o_all">Throw this colour over the whole bath</button></div>`;
+  if (t === "stylus") h += ctlHTML("o_width", "Width of the pin's wake", 4, 32, 1, o.width, mm) + ctlHTML("o_pull", "Pull", 0.3, 1, 0.05, o.pull, pct) + ctlHTML("o_spacing", "Gel-git spacing", 14, 90, 1, o.spacing, mm) +
+    `<div class="btnrow"><button class="btn ink small" type="button" id="o_gh">Gel-git across</button><button class="btn ink small" type="button" id="o_gv">Gel-git down</button></div>`;
+  if (t === "comb") {
+    const c = combSpec(), u = o.custom;
+    h += `<div class="combs" role="group" aria-label="Comb rack">${COMBS.map(k => `<button type="button" class="comb-btn" data-comb="${k.id}" aria-pressed="${k.id === o.id}">${combGlyph(k)}<span>${k.name}</span><small>${k.note}</small></button>`).join("")}</div>`;
+    h += `<div class="dirs" role="group" aria-label="Direction of pull"><span>Pull</span>${Object.keys(DIR_ARROWS).map(d => `<button type="button" data-dir="${d}" aria-pressed="${d === o.dir}" aria-label="Pull ${d}">${DIR_ARROWS[d]}</button>`).join("")}</div>`;
+    h += ctlHTML("o_len", "Length of pull", 10, 260, 2, o.len, mm);
+    h += `<div class="btnrow"><button class="btn ink small" type="button" id="o_through">Pull through the whole bath</button></div>`;
+    h += `<details class="custom" ${c.custom ? "open" : ""}><summary>Your own comb</summary><div class="grid">` +
+      ctlHTML("c_spacing", "Tine spacing", 6, 140, 1, u.spacing, mm) + ctlHTML("c_reach", "Reach of each tine", 1.5, 30, 0.5, u.reach, FMT.reach) +
+      ctlHTML("c_A", "Carry it in waves", 0, 44, 1, u.A, v => v ? mm(v) + " high" : "straight") + ctlHTML("c_wl", "Length of each wave", 30, 260, 2, u.wl, mm) +
+      `<label class="selrow" for="c_pat">Set the tines<select id="c_pat">${[["even", "Evenly"], ["pairs", "In pairs"], ["threes", "In threes"], ["pairsingle", "A pair and a single"]].map(([v, l]) => `<option value="${v}" ${u.pat === v ? "selected" : ""}>${l}</option>`).join("")}</select></label>` +
+      `</div></details>`;
+  }
+  if (t === "curl") h += ctlHTML("o_R", "Size of curl", 16, 130, 1, o.R, mm) + ctlHTML("o_twist", "Twist", 0.5, 14, 0.25, o.twist, FMT.twist) +
+    `<div class="btnrow"><button class="btn ink small" type="button" id="o_rows">Curl the whole bath in rows</button><button class="btn ink small" type="button" id="o_nests">Wind nightingale's nests</button></div>`;
+  if (t === "breath") h += ctlHTML("o_width", "Width of breath", 60, 320, 5, o.width, mm) + ctlHTML("o_strength", "Strength", 0.1, 0.6, 0.02, o.strength, pct);
+  if (t === "turps") h += ctlHTML("o_width", "Width of spatter", 20, 320, 5, o.width, mm) + ctlHTML("o_size", "Size of flecks", 1.5, 9, 0.5, o.size, v => v.toFixed(1)) + ctlHTML("o_count", "Flecks per spatter", 10, 220, 5, o.count, FMT.count) +
+    `<div class="btnrow"><button class="btn ink small" type="button" id="o_all">Spatter the whole bath</button></div>`;
+  el.innerHTML = h;
+  updateInHand();
+
+  el.querySelectorAll("input[type=range]").forEach(r => {
+    const custom = r.id.startsWith("c_"), key = r.id.slice(2), out = $("#" + r.id + "O");
+    r.addEventListener("input", () => {
+      const v = parseFloat(r.value);
+      if (custom) { o.custom[key] = v; if (o.id !== "custom") selectComb("custom", false); refreshCombGlyph(); }
+      else o[key] = v;
+      out.textContent = key === "A" && custom ? (v ? mm(v) + " high" : "straight") : (t === "turps" && key === "size" ? v.toFixed(1) : (FMT[key] || String)(v));
+      drawOverlay();
+    });
+  });
+  const pat = $("#c_pat");
+  if (pat) pat.addEventListener("change", () => { o.custom.pat = pat.value; if (o.id !== "custom") selectComb("custom", false); refreshCombGlyph(); drawOverlay(); });
+  el.querySelectorAll("[data-comb]").forEach(b => b.addEventListener("click", () => selectComb(b.dataset.comb)));
+  el.querySelectorAll("[data-dir]").forEach(b => b.addEventListener("click", () => setCombDir(b.dataset.dir)));
+  const through = $("#o_through");
+  if (through) through.addEventListener("click", () => {
+    const c = combSpec();
+    runSteps(h2 => h2.comb(o.dir, c.spacing || 0, c.len, c.reach, `Pulling the ${c.name.toLowerCase()} ${o.dir === "left" || o.dir === "right" ? "across" : o.dir} the whole bath`, c.A ? { A: c.A, wl: c.wl } : null, c.pat),
+      () => { caption("The comb is through."); tourNotify("comb"); });
+  });
+  const all = $("#o_all");
+  if (all) all.addEventListener("click", () => {
+    if (t === "whisk") {
+      const p = pot(), avg = o.size * 1.3;
+      runSteps(h2 => {
+        h2.step(`Throwing ${p.name.toLowerCase()} over the whole bath`, "seq", 10);
+        h2.scatter(p, Math.round(0.28 * AREA / (Math.PI * avg * avg * S.gall * S.gall)), o.size * 0.8, o.size * 1.6, { shell: S.oil });
+      }, () => { caption(`${p.name} is thrown.`); tourNotify("throw", p.name); nextPot(); });
+    } else {
+      runSteps(h2 => h2.turps(Math.round(o.count * 9), o.size * 0.5, o.size * 1.4), () => caption("The turpentine has opened the colour."));
+    }
+  });
+  [["#o_gh", "h"], ["#o_gv", "v"]].forEach(([id, ax]) => {
+    const btn = $(id); if (!btn) return;
+    btn.addEventListener("click", () => runSteps(h2 => h2.gelgit(ax, o.spacing, o.spacing * 1.3, o.spacing * 0.26),
+      () => { caption("Gel-git: the stylus has gone back and forth."); tourNotify("stylus"); }));
+  });
+  const rows = $("#o_rows"), nests = $("#o_nests");
+  rows && rows.addEventListener("click", () => runSteps(h2 => h2.curls(o.R * 2.05, o.R, o.twist, "Turning the whole bath in rows of curls"), () => caption("Every row is curled.")));
+  nests && nests.addEventListener("click", () => runSteps(h2 => h2.curls(o.R * 3.2, o.R * 1.55, 11, "Winding nests from the rim inwards"), () => caption("Bülbül yuvası: nightingale's nests.")));
+}
+function refreshCombGlyph() {
+  const b = document.querySelector('[data-comb="custom"]');
+  if (b) b.querySelector("svg").outerHTML = combGlyph(COMBS.find(c => c.id === "custom"));
+}
+function selectComb(id, rerender = true) {
+  const o = S.opt.comb, c = COMBS.find(x => x.id === id); if (!c) return;
+  o.id = id; if (!c.custom) o.len = c.len; else o.len = o.custom.len;
+  if (S.tool !== "comb") { setTool("comb"); return; }
+  if (rerender) renderToolOpts();
+  else $$("[data-comb]").forEach(b => b.setAttribute("aria-pressed", b.dataset.comb === id ? "true" : "false"));
+  drawOverlay();
+}
+function setCombDir(d) {
+  S.opt.comb.dir = d;
+  $$("[data-dir]").forEach(b => b.setAttribute("aria-pressed", b.dataset.dir === d ? "true" : "false"));
+  drawOverlay();
+}
+function setTool(t) {
+  S.tool = t;
+  $$(".tool").forEach(b => b.setAttribute("aria-pressed", b.dataset.tool === t ? "true" : "false"));
+  $("#bath").className = "bath tool-" + t;
+  renderToolOpts(); drawOverlay();
+}
+$$(".tool").forEach(b => b.addEventListener("click", () => setTool(b.dataset.tool)));
+
+/* ---------- Working the bath by hand ---------- */
+const bath = $("#bath"), overlay = $("#overlay");
+const G = { down: false, start: null, last: null, hover: null, idx: -1, t0: 0, r0: 0, moved: 0, mode: "", auto: null, spec: null, sx: 0, sy: 0 };
+function trayPt(e) {
+  const r = bath.getBoundingClientRect();
+  return [(e.clientX - r.left) / r.width * TW, (e.clientY - r.top) / r.height * TH];
+}
+function sprayDrops(p, width, count, rmin, rmax, clear) {
+  const c = pot();
+  for (let k = 0; k < count; k++) {
+    const a = Math.random() * 6.283, d = Math.sqrt(Math.random()) * width * 0.5;
+    const r = rmin + (rmax - rmin) * Math.pow(Math.random(), 1.6);
+    M.add(clear ? OP.drop(p[0] + Math.cos(a) * d, p[1] + Math.sin(a) * d, r, CLEAR.rgb, { clear: true })
+      : OP.drop(p[0] + Math.cos(a) * d, p[1] + Math.sin(a) * d, r * S.gall, c.rgb, { metal: c.metal, clear: c.clear, shell: S.oil }));
+  }
+}
+function pushPath(a, b, sigma, strength) {
+  const step = sigma * 0.3, L = Math.hypot(b[0] - a[0], b[1] - a[1]); if (L < 0.5) return;
+  const n = Math.ceil(L / step), dx = (b[0] - a[0]) / n, dy = (b[1] - a[1]) / n;
+  for (let k = 0; k < n; k++) M.add(OP.push(a[0] + dx * (k + 0.5), a[1] + dy * (k + 0.5), sigma, dx * strength, dy * strength));
+}
+function finishAuto() {
+  if (!G.auto) return;
+  M.set(G.auto.idx, G.auto.k, G.auto.to);
+  const kind = G.auto.kind; G.auto = null; M.setInteracting(false);
+  if (kind === "comb") { caption("The comb is through."); tourNotify("comb"); }
+  else caption("The curl is turned.");
+}
+bath.addEventListener("pointerdown", e => {
+  if (!M || e.button > 0) return;
+  e.preventDefault();
+  if (P.active) stopPlayer(true);
+  finishAuto();
+  bath.setPointerCapture(e.pointerId);
+  const p = trayPt(e), t = S.tool, o = S.opt[t];
+  Object.assign(G, { down: true, start: p, last: p, hover: p, moved: 0, idx: -1, mode: "", sx: e.clientX, sy: e.clientY });
+  M.setInteracting(true);
+  if (!S.plateName || S.plateName === "A fresh bath") setPlate("Your own plate", "");
+  const c = pot();
+  if (t === "drop") {
+    mark(`Dropping ${c.name.toLowerCase()}`);
+    G.r0 = o.size * S.gall; G.t0 = performance.now();
+    G.idx = M.add(OP.drop(p[0], p[1], G.r0, c.rgb, { metal: c.metal, clear: c.clear, shell: S.oil }));
+    caption(`Dropping ${c.name.toLowerCase()}. Hold to let more colour run.`);
+  } else if (t === "whisk") {
+    mark(`Throwing ${c.name.toLowerCase()}`);
+    sprayDrops(p, o.width, o.count, o.size * 0.4, o.size * 1.15);
+    caption(`Throwing ${c.name.toLowerCase()} from the whisk.`);
+  } else if (t === "turps") {
+    mark("Spattering turpentine");
+    sprayDrops(p, o.width, o.count, o.size * 0.45, o.size * 1.3, true);
+    caption("Spattering turpentine.");
+  } else if (t === "stylus" || t === "breath") {
+    mark(t === "stylus" ? "Drawing the stylus" : "Breathing across the bath");
+    caption(t === "stylus" ? "Drawing the stylus through the colour." : "Breathing across the bath.");
+  } else if (t === "comb") {
+    G.spec = combSpec();
+    mark(`Pulling the ${G.spec.name.toLowerCase()} ${o.dir === "left" || o.dir === "right" ? "across" : o.dir}`);
+    G.idx = M.add(combOp(G.spec, p, DIRS[o.dir], 0));
+    G.mode = "pending";
+    caption("Release to pull the comb, or drag to pull it by hand.");
+  } else if (t === "curl") {
+    mark("Turning a curl");
+    G.idx = M.add(OP.swirl(p[0], p[1], 0, o.R));
+    G.mode = "pending";
+  }
+  drawOverlay();
+});
+bath.addEventListener("pointermove", e => {
+  if (!M) return;
+  const p = trayPt(e); G.hover = p;
+  if (!G.down) { drawOverlay(); return; }
+  const t = S.tool, o = S.opt[t];
+  const dx = p[0] - G.last[0], dy = p[1] - G.last[1], step = Math.hypot(dx, dy);
+  const screenMoved = Math.hypot(e.clientX - G.sx, e.clientY - G.sy);
+  G.moved += step;
+  if (t === "stylus") { pushPath(G.last, p, o.width, o.pull); G.last = p; }
+  else if (t === "breath") { if (step > o.width * 0.15) { pushPath(G.last, p, o.width, o.strength); G.last = p; } }
+  else if (t === "whisk" && G.moved > o.width * 0.45) { sprayDrops(p, o.width, Math.ceil(o.count * 0.6), o.size * 0.4, o.size * 1.15); G.moved = 0; G.last = p; }
+  else if (t === "turps" && G.moved > o.width * 0.4) { sprayDrops(p, o.width, Math.ceil(o.count * 0.6), o.size * 0.45, o.size * 1.3, true); G.moved = 0; G.last = p; }
+  else if (t === "comb" && (G.mode === "drag" || screenMoved > 8)) {
+    G.mode = "drag";
+    let vx = p[0] - G.start[0], vy = p[1] - G.start[1];
+    if (!e.shiftKey) {
+      if (Math.abs(vx) > Math.abs(vy)) { vy = 0; setCombDir(vx >= 0 ? "right" : "left"); }
+      else { vx = 0; setCombDir(vy >= 0 ? "down" : "up"); }
+    }
+    const L = Math.hypot(vx, vy);
+    if (L > 1) { M.set(G.idx, 3, Math.atan2(vy, vx)); M.set(G.idx, 4, L); }
+    caption(`Pulling by hand, ${mm(L)}. Hold Shift to pull at an angle.`);
+  } else if (t === "curl" && (G.mode === "drag" || screenMoved > 8)) {
+    G.mode = "drag";
+    const tw = (p[0] - G.start[0]) / Math.max(20, o.R) * (o.twist / 2.2);
+    M.set(G.idx, 3, Math.max(-o.twist * 2, Math.min(o.twist * 2, tw)));
+  }
+  drawOverlay();
+});
+function endStroke() {
+  if (!G.down) return;
+  G.down = false;
+  const t = S.tool;
+  let keepInteracting = false;
+  if (t === "drop") { caption(`${pot().name} has spread.`); tourNotify("throw", pot().name); nextPot(); }
+  if (t === "whisk") { caption(`${pot().name} is thrown.`); tourNotify("throw", pot().name); nextPot(); }
+  if (t === "comb") {
+    if (G.mode === "pending") {
+      G.auto = { idx: G.idx, k: 4, to: S.opt.comb.len, t0: performance.now(), dur: 650, kind: "comb" }; keepInteracting = true;
+      caption(`Pulling the ${G.spec.name.toLowerCase()}.`);
+    } else if (M.ops.get(G.idx, 4) < 2) { M.popPass(); caption("Drag further to pull the comb."); }
+    else { caption("The comb is through."); tourNotify("comb"); }
+  }
+  if (t === "curl") {
+    if (G.mode === "pending") { G.auto = { idx: G.idx, k: 3, to: S.opt.curl.twist, t0: performance.now(), dur: 700, kind: "curl" }; keepInteracting = true; }
+    else caption("The curl is turned.");
+  }
+  if (t === "stylus" || t === "breath") {
+    if (M.passes && M.marks[M.passes - 1] === M.count) M.popPass();
+    else if (t === "stylus") tourNotify("stylus");
+  }
+  if (!keepInteracting) M.setInteracting(false);
+  G.idx = -1; drawOverlay();
+}
+bath.addEventListener("pointerup", endStroke);
+bath.addEventListener("pointercancel", endStroke);
+bath.addEventListener("pointerleave", () => { if (!G.down) { G.hover = null; drawOverlay(); } });
+
+if (M) M.onFrame = () => {
+  advancePlayer();
+  if (G.auto) {
+    const t = Math.min(1, (performance.now() - G.auto.t0) / G.auto.dur);
+    M.set(G.auto.idx, G.auto.k, G.auto.to * (1 - Math.pow(1 - t, 2.2)));
+    if (t >= 1) finishAuto();
+  }
+  if (G.down && S.tool === "drop" && G.idx >= 0) {
+    const k = Math.min(1, (performance.now() - G.t0) / 1600);
+    M.set(G.idx, 3, G.r0 * (1 + 1.3 * k * k));
+    drawOverlay();
+  }
+  updateHistory();
+};
+
+/* ---------- Overlay: the tool's shadow on the bath ---------- */
+function drawOverlay() {
+  const c = overlay, dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = Math.round(c.clientWidth * dpr), h = Math.round(c.clientHeight * dpr);
+  if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
+  const x = c.getContext("2d"); x.clearRect(0, 0, w, h);
+  const p = G.hover; if (!p || !M) return;
+  const sx = w / TW, sy = h / TH, t = S.tool, o = S.opt[t];
+  const X = p[0] * sx, Y = p[1] * sy;
+  x.lineWidth = 1.2 * dpr; x.strokeStyle = "rgba(255,240,200,.88)"; x.shadowColor = "rgba(0,0,0,.6)"; x.shadowBlur = 3 * dpr;
+  const ring = (r, dash) => { x.setLineDash(dash ? [4 * dpr, 4 * dpr] : []); x.beginPath(); x.arc(X, Y, Math.max(2, r * sx), 0, 6.283); x.stroke(); };
+  if (t === "drop") ring(G.down && G.idx >= 0 ? M.ops.get(G.idx, 3) : o.size * S.gall, !G.down);
+  else if (t === "whisk" || t === "turps") ring(o.width / 2, true);
+  else if (t === "stylus") { ring(o.width * 0.6); x.fillStyle = "rgba(255,240,200,.9)"; x.beginPath(); x.arc(X, Y, 1.6 * dpr, 0, 6.283); x.fill(); }
+  else if (t === "breath") ring(o.width * 0.7, true);
+  else if (t === "curl") {
+    const cx = G.down ? G.start[0] * sx : X, cy = G.down ? G.start[1] * sy : Y;
+    x.setLineDash([3 * dpr, 4 * dpr]); x.beginPath(); x.arc(cx, cy, o.R * sx, 0, 6.283); x.stroke();
+    x.setLineDash([]); x.beginPath();
+    for (let a = 0; a < 9.5; a += 0.12) { const r = o.R * sx * (1 - a / 11); const px = cx + Math.cos(a) * r * 0.85, py = cy + Math.sin(a) * r * 0.85; a ? x.lineTo(px, py) : x.moveTo(px, py); }
+    x.globalAlpha = 0.4; x.stroke(); x.globalAlpha = 1;
+  } else if (t === "comb") drawCombPreview(x, dpr, sx, sy);
+}
+function drawCombHead(x, dpr, sx, sy, hx, hy, m, n, spec, solid) {
+  const len = 1600;
+  x.setLineDash(solid ? [] : [5 * dpr, 5 * dpr]);
+  x.lineWidth = (solid ? 3 : 1.5) * dpr; x.strokeStyle = solid ? "rgba(60,38,20,.8)" : "rgba(255,240,200,.6)";
+  x.beginPath(); x.moveTo((hx - n[0] * len) * sx, (hy - n[1] * len) * sy); x.lineTo((hx + n[0] * len) * sx, (hy + n[1] * len) * sy); x.stroke();
+  x.lineWidth = 1.2 * dpr; x.strokeStyle = solid ? "rgba(255,240,200,.9)" : "rgba(255,240,200,.55)";
+  x.beginPath();
+  const tick = (bx, by) => {
+    if (bx < -50 || bx > TW + 50 || by < -50 || by > TH + 50) return;
+    x.moveTo(bx * sx, by * sy); x.lineTo((bx + m[0] * 16) * sx, (by + m[1] * 16) * sy);
+  };
+  if (!spec.spacing) tick(hx, hy);
+  else {
+    const K = Math.ceil(1600 / spec.spacing);
+    for (let k = -K; k <= K; k++) [0, ...(spec.pat || [])].forEach(f => tick(hx + n[0] * (k + f) * spec.spacing, hy + n[1] * (k + f) * spec.spacing));
+  }
+  x.stroke();
+}
+function drawCombPreview(x, dpr, sx, sy) {
+  const o = S.opt.comb, spec = G.down && G.spec ? G.spec : combSpec();
+  const origin = G.down ? G.start : G.hover;
+  let a = DIRS[o.dir];
+  if (G.down && G.idx >= 0) a = M.ops.get(G.idx, 3);
+  const m = [Math.cos(a), Math.sin(a)], n = [-m[1], m[0]];
+  const pulled = G.down && G.idx >= 0 ? M.ops.get(G.idx, 4) : 0;
+  const reach = G.down && G.mode === "drag" ? pulled : o.len;
+  // where the comb will travel: an arrow and, for waved combs, the path of a tine
+  x.setLineDash([3 * dpr, 4 * dpr]); x.lineWidth = 1.4 * dpr; x.strokeStyle = "rgba(255,240,200,.9)";
+  x.beginPath();
+  for (let s = 0; s <= reach; s += 3) {
+    const off = spec.A ? spec.A * Math.sin(2 * Math.PI / spec.wl * s) : 0;
+    const px = (origin[0] + m[0] * s + n[0] * off) * sx, py = (origin[1] + m[1] * s + n[1] * off) * sy;
+    s ? x.lineTo(px, py) : x.moveTo(px, py);
+  }
+  x.stroke();
+  const ex = (origin[0] + m[0] * reach) * sx, ey = (origin[1] + m[1] * reach) * sy;
+  x.setLineDash([]); x.fillStyle = "rgba(255,240,200,.95)";
+  x.beginPath(); x.moveTo(ex + m[0] * 9 * dpr, ey + m[1] * 9 * dpr);
+  x.lineTo(ex - m[0] * 4 * dpr + n[0] * 6 * dpr, ey - m[1] * 4 * dpr + n[1] * 6 * dpr);
+  x.lineTo(ex - m[0] * 4 * dpr - n[0] * 6 * dpr, ey - m[1] * 4 * dpr - n[1] * 6 * dpr); x.closePath(); x.fill();
+  // the comb where it starts (solid) and where it will stop (dashed)
+  if (!G.down) drawCombHead(x, dpr, sx, sy, origin[0] + m[0] * reach, origin[1] + m[1] * reach, m, n, spec, false);
+  drawCombHead(x, dpr, sx, sy, origin[0] + m[0] * pulled, origin[1] + m[1] * pulled, m, n, spec, true);
+  if (!G.down) {
+    x.font = `italic ${13 * dpr}px "EB Garamond", Georgia, serif`; x.fillStyle = "rgba(255,240,200,.95)";
+    x.fillText(`${spec.name}: click to pull ${mm(o.len)}`, origin[0] * sx + 12 * dpr, origin[1] * sy - 12 * dpr);
+  }
+}
+
+/* =====================================================================
+   SHEETS, THE PATTERN BOOK, KEYS, THE GUIDE, AND OPENING STATE
+   ===================================================================== */
+function opsOfSteps(steps) {
+  const all = []; steps.forEach(s => s.ops.forEach(o => all.push(...o)));
+  return new Float32Array(all);
+}
+const uFor = (sheet = {}) => {
+  const paper = sheet.paper ?? 0;
+  return { ...M.U, spanish: 0, drag: 0, ...sheet, paper, paperCol: PAPERS[paper].col, seed: 0.37 };
+};
+
+/* ---------- Laying down a sheet ---------- */
+let laying = false;
+function layDown() {
+  if (!M || laying) return;
+  stopPlayer(true); finishAuto(); M.commitView(); updateHistory(true);
+  if (!M.count) { toast("The bath is clean. Throw some colour before laying down a sheet."); return; }
+  const el = $("#sheetAnim");
+  const finish = () => {
+    laying = false;
+    const thumb = M.snapshot(360, 240, 1).toDataURL("image/jpeg", 0.86);
+    const sheet = {
+      id: "s" + Date.now(), no: S.plateNo, name: S.plateName || "Your own plate",
+      when: new Date().toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" }),
+      thumb, ops: M.ops.toArray(), marks: M.marks.slice(), caps: M.caps.slice(),
+      U: { paper: M.U.paper, alum: M.U.alum, spanish: M.U.spanish, drag: M.U.drag, air: M.U.air, age: M.U.age, burnish: M.U.burnish, rim: M.U.rim, grain: M.U.grain, seed: M.U.seed }
+    };
+    S.sheets.unshift(sheet);
+    if (S.sheets.length > 14) S.sheets.length = 14;
+    persistSheets(); renderSheets();
+    S.plateNo++; store.set("plateNo", S.plateNo);
+    caption("Pulled. A bath gives one good print; skim it before the next plate.");
+    toast(`Plate ${roman(sheet.no)} is hung on the drying line${S.studio ? " below the trough" : ""}. Open it to see it bound or to save it.`);
+    tourNotify("sheet");
+  };
+  laying = true;
+  if (reduceMotion()) { setView(1); finish(); return; }
+  caption("Laying the sheet down by one corner, then the rest in a single movement.");
+  el.style.transition = "none";
+  el.style.opacity = "1"; el.style.transform = "translateY(-104%) rotate(-4deg)";
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    el.style.transition = "transform .75s cubic-bezier(.3,.7,.3,1)";
+    el.style.transform = "translateY(0) rotate(0)";
+    setTimeout(() => {
+      setView(1);
+      caption("Lifting the sheet from the bath.");
+      el.style.transition = "transform .7s ease-in, opacity .7s ease-in";
+      el.style.transform = "perspective(900px) rotateY(-70deg) translateX(-8%)"; el.style.opacity = "0";
+      setTimeout(finish, 400);
+    }, 1000);
+  }));
+}
+$("#layBtn").addEventListener("click", layDown);
+function persistSheets() {
+  let list = S.sheets.slice();
+  while (list.length && !store.set("sheets", list)) list = list.slice(0, -1);
+}
+function renderSheets() {
+  const box = $("#sheets"); box.innerHTML = "";
+  if (!S.sheets.length) { box.innerHTML = '<p class="empty">Pulled sheets hang here to dry. Lay down a sheet to take your first print.</p>'; return; }
+  S.sheets.forEach(sh => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "sheet-thumb";
+    b.setAttribute("aria-label", `Plate ${roman(sh.no)}, ${sh.name}`);
+    const img = new Image(); img.src = sh.thumb; img.alt = "";
+    const s = document.createElement("span"); s.textContent = `${roman(sh.no)} · ${sh.name}`;
+    b.append(img, s); b.addEventListener("click", () => openSpecimen(sh));
+    box.appendChild(b);
+  });
+}
+
+/* ---------- Specimen: the sheet, bound ---------- */
+let SPEC = null, downloads = null;
+// outside a Claude artifact (opened as a plain file or on GitHub Pages) an ordinary download link works
+const standalone = !window.claude;
+function sheetU(sh) { return { ...M.U, ...sh.U, paperCol: PAPERS[sh.U.paper || 0].col }; }
+function openSpecimen(sh) {
+  if (!M) return;
+  SPEC = sh;
+  const big = M.renderList(sh.ops, 1200, 800, sheetU(sh), 1).toDataURL("image/jpeg", 0.92);
+  $("#specImg").src = big;
+  $("#specBoard").style.backgroundImage = `url(${big})`;
+  $("#specTitle").textContent = `Plate ${roman(sh.no)}: ${sh.name}`;
+  $("#specLabel").textContent = sh.name;
+  $("#specMeta").textContent = `Pulled ${sh.when} on ${PAPERS[sh.U.paper || 0].name}, ${(sh.marks || []).length || 1} passes and ${Math.round(sh.ops.length / OPF)} strokes on the bath.`;
+  $("#specDownload").hidden = !(downloads || standalone);
+  $("#specimen").hidden = false;
+  $("#specClose").focus();
+  tourNotify("specimen");
+}
+function closeSpecimen() { $("#specimen").hidden = true; SPEC = null; }
+$("#specClose").addEventListener("click", closeSpecimen);
+$("#specimen").addEventListener("click", e => { if (e.target.id === "specimen") closeSpecimen(); });
+$("#specRemove").addEventListener("click", () => {
+  if (!SPEC) return;
+  S.sheets = S.sheets.filter(s => s.id !== SPEC.id); persistSheets(); renderSheets(); closeSpecimen();
+  toast("Taken down from the line.");
+});
+$("#specRestore").addEventListener("click", () => {
+  if (!SPEC || !M) return;
+  stopPlayer(false);
+  M.load(new Float32Array(SPEC.ops), SPEC.marks, SPEC.caps);
+  applySheet(SPEC.U); ["rim", "grain"].forEach(k => { if (k in SPEC.U) { M.U[k] = SPEC.U[k]; R[k].set(SPEC.U[k]); } });
+  setPlate(SPEC.name, "The bath is restored as it stood when this sheet was pulled. The history slider runs back through every pass.");
+  setView(0); closeSpecimen(); updateHistory(true);
+});
+$("#specDownload").addEventListener("click", async () => {
+  if (!SPEC || !(downloads || standalone)) return;
+  const btn = $("#specDownload"); btn.disabled = true; btn.textContent = "Rendering at full size…";
+  await new Promise(r => setTimeout(r, 30));
+  try {
+    const c = M.renderList(SPEC.ops, 2400, 1600, sheetU(SPEC), 1);
+    const blob = await new Promise(r => c.toBlob(r, "image/png"));
+    const slug = SPEC.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "plate";
+    const filename = `marbled-plate-${roman(SPEC.no).toLowerCase()}-${slug}.png`;
+    if (downloads) await downloads.save({ filename, data: blob });
+    else {
+      const a = document.createElement("a"), url = URL.createObjectURL(blob);
+      a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+    }
+    toast("Saved.");
+  } catch (err) {
+    toast(err && err.code === "declined" ? "Not saved." : "The sheet could not be saved here.");
+  } finally { btn.disabled = false; btn.textContent = "Save the sheet as PNG"; }
+});
+(async () => {
+  try { downloads = window.claude && window.claude.use ? await window.claude.use("downloads") : null; } catch (e) { downloads = null; }
+})();
+
+/* ---------- The pattern book ---------- */
+const thumbs = {};
+function recipeCard(rec, user) {
+  const wrap = document.createElement("div");
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "recipe"; b.dataset.id = rec.id; b.setAttribute("aria-current", "false");
+  const sw = document.createElement("span"); sw.className = "sw"; if (thumbs[rec.id]) sw.style.backgroundImage = `url(${thumbs[rec.id]})`;
+  const tx = document.createElement("span"); tx.className = "rt";
+  tx.innerHTML = `<span class="rn"></span><span class="ra"></span><span class="rd"></span>`;
+  tx.querySelector(".rn").textContent = rec.name;
+  tx.querySelector(".ra").textContent = [rec.aka, rec.origin, rec.date].filter(Boolean).join(" · ");
+  tx.querySelector(".rd").textContent = rec.note;
+  b.append(sw, tx);
+  b.addEventListener("click", () => user ? workUserRecipe(rec) : workRecipe(rec));
+  wrap.appendChild(b);
+  if (user) {
+    const del = document.createElement("button"); del.type = "button"; del.className = "btn ink small rdel"; del.textContent = "Remove from the book";
+    del.addEventListener("click", () => { S.userRecipes = S.userRecipes.filter(r => r.id !== rec.id); store.set("recipes", S.userRecipes); renderBook(); });
+    wrap.appendChild(del);
+  }
+  return wrap;
+}
+function renderBook() {
+  const box = $("#recipes"); box.innerHTML = "";
+  const groups = S.trad === "all" ? ["japan", "ottoman", "europe", "yours"] : [S.trad];
+  groups.forEach(g => {
+    const list = g === "yours" ? S.userRecipes : RECIPES.filter(r => r.trad === g);
+    if (!list.length && S.trad === "all") return;
+    const h = document.createElement("p"); h.className = "trad-label"; h.textContent = TRAD_LABEL[g]; box.appendChild(h);
+    if (!list.length) { const p = document.createElement("p"); p.className = "lede"; p.textContent = "Nothing entered yet. Work the bath your own way, name it below and enter it in the book."; box.appendChild(p); return; }
+    list.forEach(r => box.appendChild(recipeCard(r, g === "yours")));
+  });
+  queueThumbs();
+}
+$$("#tradSeg button").forEach(b => b.addEventListener("click", () => {
+  S.trad = b.dataset.trad;
+  $$("#tradSeg button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+  renderBook();
+}));
+$("#ownColoursChk").addEventListener("change", e => S.ownColours = e.target.checked);
+let thumbQ = [], thumbBusy = false;
+function queueThumbs() {
+  if (!M) return;
+  thumbQ = [...RECIPES, ...S.userRecipes].filter(r => !thumbs[r.id]);
+  if (!thumbBusy) { thumbBusy = true; setTimeout(nextThumb, 160); }
+}
+function nextThumb() {
+  // let the bath draw first while someone is working it
+  if (G.down || P.active || G.auto) { setTimeout(nextThumb, 250); return; }
+  const rec = thumbQ.shift(); if (!rec) { thumbBusy = false; return; }
+  try {
+    let data, U;
+    if (rec.ops) { data = new Float32Array(rec.ops); U = uFor(rec.U || {}); }
+    else { const h = new Hand(suitePal(rec.suite), strSeed(rec.id), { gall: 1, size: 1 }); rec.build(h); data = opsOfSteps(h.steps); U = uFor(rec.sheet); }
+    U.age = 0; U.air = 0.05; U.alum = 0.95;
+    thumbs[rec.id] = M.renderList(data, 228, 152, U, 1).toDataURL("image/jpeg", 0.85);
+    $$(`.recipe[data-id="${rec.id}"] .sw`).forEach(s => s.style.backgroundImage = `url(${thumbs[rec.id]})`);
+  } catch (e) { console.warn(e); }
+  setTimeout(nextThumb, 40);
+}
+function workUserRecipe(rec) {
+  if (!M) return;
+  stopPlayer(false);
+  applySheet(rec.U || {});
+  setView(0);
+  $$(".recipe").forEach(b => b.setAttribute("aria-current", b.dataset.id === rec.id ? "true" : "false"));
+  S.last = null;
+  replayOps(rec.ops, rec.marks || [0], rec.caps || [], rec.name);
+}
+$("#saveBtn").addEventListener("click", () => {
+  if (!M) return;
+  stopPlayer(true); M.commitView(); updateHistory(true);
+  if (!M.count) { toast("The bath is clean. Work a pattern before entering it in the book."); return; }
+  const name = $("#saveName").value.trim() || `Your plate ${roman(S.userRecipes.length + 1)}`;
+  const rec = {
+    id: "u" + Date.now(), trad: "yours", name, aka: "your own recipe", origin: "this atelier",
+    date: new Date().toLocaleDateString(undefined, { month: "short", year: "numeric" }),
+    note: `${M.passes} passes and ${M.count} strokes on the bath. Click to watch it worked again.`,
+    ops: M.ops.toArray(), marks: M.marks.slice(), caps: M.caps.slice(),
+    U: { paper: M.U.paper, alum: M.U.alum, spanish: M.U.spanish, drag: M.U.drag, air: M.U.air, age: M.U.age, burnish: M.U.burnish }
+  };
+  S.userRecipes.unshift(rec);
+  let list = S.userRecipes.slice();
+  while (list.length && !store.set("recipes", list)) list = list.slice(0, -1);
+  $("#saveName").value = "";
+  S.trad = "yours";
+  $$("#tradSeg button").forEach(x => x.setAttribute("aria-pressed", x.dataset.trad === "yours" ? "true" : "false"));
+  renderBook();
+  toast(`“${name}” is entered in the pattern book.`);
+});
+
+/* ---------- Keyboard ---------- */
+const TOOL_KEYS = { d: "drop", w: "whisk", s: "stylus", c: "comb", r: "curl", b: "breath", t: "turps" };
+const ARROW_DIRS = { ArrowDown: "down", ArrowUp: "up", ArrowLeft: "left", ArrowRight: "right" };
+window.addEventListener("keydown", e => {
+  const k = e.key, mod = e.metaKey || e.ctrlKey;
+  if (k === "Escape") {
+    if (!$("#specimen").hidden) { closeSpecimen(); return; }
+    if (S.studio) { setStudio(false); return; }
+    return;
+  }
+  if (mod && k.toLowerCase() === "z") { e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
+  if (mod && k.toLowerCase() === "y") { e.preventDefault(); redo(); return; }
+  if (mod || e.altKey) return;
+  const tgt = e.target;
+  if (tgt.closest && tgt.closest("input, select, textarea, [contenteditable]")) return;
+  if (!$("#specimen").hidden) return;
+  const lk = k.toLowerCase();
+  if (TOOL_KEYS[lk]) { setTool(TOOL_KEYS[lk]); return; }
+  if (/^[0-9]$/.test(k)) {
+    const i = k === "0" ? S.pots.findIndex(p => p.clear) : +k - 1;
+    if (i >= 0 && i < S.pots.length && !S.pots[i].metal && (k === "0" || !S.pots[i].clear)) selectPot(i);
+    return;
+  }
+  if (ARROW_DIRS[k] && S.tool === "comb" && !(tgt.closest && tgt.closest("button"))) { e.preventDefault(); setCombDir(ARROW_DIRS[k]); caption(`The comb will pull ${ARROW_DIRS[k]}.`); return; }
+  if (k === "[") { undo(); return; }
+  if (k === "]") { redo(); return; }
+  if (lk === "p") { setView(M && M.mode === 1 ? 0 : 1); return; }
+  if (lk === "f") { setStudio(!S.studio); return; }
+  if (lk === "l") { layDown(); return; }
+  if (k === "?") { const d = $("#keysBox"); d.open = !d.open; if (d.open) d.scrollIntoView({ block: "nearest" }); }
+});
+
+/* ---------- The guided first plate ---------- */
+const TOUR = [
+  { title: "Throw three colours", target: "#potStrip",
+    text: "The whisk is in your hand. Pick a colour from the strip beside the bath, then click or drag across the bath to throw it. Throw three different colours, one after another.",
+    setup() { skim(); setTool("whisk"); selectPot(0, false); }, done: st => st.colours.size >= 3 },
+  { title: "Draw the stylus back and forth", target: "#toolOpts",
+    text: "This is gel-git, the first drawing of the colours. Press “Gel-git across”, or drag the stylus back and forth through the bath yourself.",
+    setup() { setTool("stylus"); }, done: st => st.stylus },
+  { title: "Pull the nonpareil comb", target: "#bath",
+    text: "The 3 mm nonpareil comb is on the rack, set to pull down. The dashed comb shows where it will stop. Click anywhere on the bath and watch it go through.",
+    setup() { setTool("comb"); selectComb("nonpareil"); setCombDir("down"); }, done: st => st.comb },
+  { title: "Lay down a sheet", target: "#layBtn",
+    text: "Press “Lay down a sheet”, or the L key. The paper takes up the whole pattern in one print, and the view turns to the proof.",
+    setup() { }, done: st => st.sheet },
+  { title: "See it bound", target: "#sheets",
+    text: "Your sheet is hanging on the drying line under the trough. Open it to see it bound as the boards of a half-leather book.",
+    setup() { if (S.studio) setStudio(false); }, done: st => st.specimen }
+];
+const T = { on: false, i: 0, st: null, targetEl: null, timer: 0 };
+function tourStart() {
+  store.set("invited", true); $("#invite").hidden = true;
+  Object.assign(T, { on: true, i: 0, st: { colours: new Set(), stylus: false, comb: false, sheet: false, specimen: false } });
+  tourShow();
+}
+function tourShow() {
+  if (T.targetEl) T.targetEl.classList.remove("tour-target");
+  const step = TOUR[T.i];
+  if (!step) { tourEnd(true); return; }
+  step.setup();
+  $("#tour").hidden = false;
+  $("#tourStep").textContent = `Step ${T.i + 1} of ${TOUR.length}`;
+  $$("#tourProg i").forEach((el, j) => el.classList.toggle("on", j <= T.i));
+  $("#tourTitle").textContent = step.title;
+  $("#tourText").textContent = step.text;
+  $("#tourNext").textContent = T.i === TOUR.length - 1 ? "Finish" : "Next step";
+  tourRefresh();
+}
+function tourRefresh() {
+  if (!T.on) return;
+  if (T.targetEl) T.targetEl.classList.remove("tour-target");
+  const el = $(TOUR[T.i].target);
+  T.targetEl = el;
+  if (el) { el.classList.add("tour-target"); if (!S.studio) el.scrollIntoView({ block: "nearest", behavior: reduceMotion() ? "auto" : "smooth" }); }
+}
+function tourNotify(kind, info) {
+  if (!T.on) return;
+  if (kind === "throw" && info) T.st.colours.add(info);
+  if (kind === "stylus") T.st.stylus = true;
+  if (kind === "comb") T.st.comb = true;
+  if (kind === "sheet") T.st.sheet = true;
+  if (kind === "specimen") T.st.specimen = true;
+  const step = TOUR[T.i];
+  if (step && kind === "throw" && T.i === 0 && T.st.colours.size < 3) {
+    $("#tourText").textContent = `${T.st.colours.size} of 3 colours thrown. Pick another colour from the strip and throw it.`;
+  }
+  if (step && step.done(T.st)) {
+    clearTimeout(T.timer);
+    T.timer = setTimeout(() => { T.i++; tourShow(); }, 900);
+  }
+}
+function tourEnd(finished) {
+  clearTimeout(T.timer);
+  T.on = false;
+  if (T.targetEl) T.targetEl.classList.remove("tour-target");
+  T.targetEl = null;
+  $("#tour").hidden = true;
+  if (finished) toast("That is the whole craft: throw, draw, comb, lay down, bind. The pattern book has twenty-five more to try.", 6000);
+}
+$("#tourNext").addEventListener("click", () => { clearTimeout(T.timer); T.i++; tourShow(); });
+$("#tourSkip").addEventListener("click", () => tourEnd(false));
+$("#guideBtn").addEventListener("click", () => { if (P.active) stopPlayer(true); tourStart(); });
+$("#inviteYes").addEventListener("click", tourStart);
+$("#inviteNo").addEventListener("click", () => { store.set("invited", true); $("#invite").hidden = true; });
+
+/* ---------- Opening state: a plate already on the bath ---------- */
+setSuite(S.suiteId);
+setTool("drop");
+renderSheets();
+renderBook();
+if (M) {
+  const first = RECIPES.find(r => r.id === "bouquet");
+  workRecipe(first, { animate: false, seed: 271828, doneCaption: "A Bouquet is on the bath. Pick up a tool and work into it, or choose a pattern from the book." });
+  updateHistory(true);
+}
+if (!store.get("invited", false)) $("#invite").hidden = false;
+</script>
