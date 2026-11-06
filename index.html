@@ -574,6 +574,31 @@ details.keys dd { margin: 0; color: var(--on-morocco-soft); }
   .workspace.studio .side { overflow: visible; }
 }
 body.in-studio { overflow: hidden; }
+
+/* Palettes */
+.palbar { display: grid; gap: 6px; }
+.palbar:empty { display: none; }
+.palrow { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.palrow input[type="text"] { flex: 1 1 120px; width: auto; }
+.palthumb { width: 44px; height: 44px; object-fit: cover; box-shadow: 0 0 0 1px var(--rule); flex: none; }
+.palnote { margin: 0; font-size: .86rem; font-style: italic; color: var(--ink-soft); flex: 1 1 160px; }
+.palnote.empty-pots { color: var(--sel); }
+.pal-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.potwrap { position: relative; display: grid; }
+.potwrap .rm {
+  position: absolute; top: 0; right: 2px; width: 22px; height: 22px; padding: 0; border-radius: 50%;
+  border: 1px solid var(--rule); background: var(--field); color: var(--ink); font-size: .95rem; line-height: 1;
+  cursor: pointer; opacity: 0; transition: opacity .15s;
+}
+.potwrap:hover .rm, .potwrap:focus-within .rm, .potwrap .rm:focus-visible { opacity: 1; }
+@media (hover: none) { .potwrap .rm { opacity: .9; } }
+.potwrap .rm:hover { background: var(--sel); color: var(--vellum); border-color: var(--sel); }
+.panel.pots.dropping { outline: 2px dashed var(--gilt); outline-offset: -8px; }
+.toast-act {
+  margin-left: 10px; border: 1px solid var(--sel); background: transparent; color: var(--sel);
+  font: inherit; font-style: normal; padding: 1px 8px; cursor: pointer; border-radius: 2px;
+}
+.toast-act:hover { background: var(--sel); color: var(--vellum); }
 </style>
 <div class="page">
   <header class="masthead">
@@ -607,16 +632,26 @@ body.in-studio { overflow: hidden; }
       <div class="tabpanel" role="tabpanel" id="panel-colour" aria-labelledby="tab-colour">
         <p class="tab-note">Pigment ground with ox gall. Pick a pot here or from the strip beside the bath.</p>
         <div class="section">
-          <h3><span>Suite of colours</span></h3>
-          <label class="sr-only" for="suiteSel">Suite of colours</label>
+          <h3><span>Palette</span></h3>
+          <label class="sr-only" for="suiteSel">Palette</label>
           <select id="suiteSel"></select>
-          <div class="pots-grid" id="potsGrid" role="group" aria-label="Colour pots"></div>
+          <div class="palbar" id="palBar"></div>
+          <div class="pots-grid" id="potsGrid" role="group" aria-label="Colour pots. Use the × on a pot, or Delete, to remove it."></div>
           <div class="grind">
             <label class="sr-only" for="grindColor">New colour</label>
             <input type="color" id="grindColor" value="#3a6e8f">
-            <button class="btn ink small" id="grindBtn" type="button">Grind a new pot</button>
+            <button class="btn ink small" id="grindBtn" type="button">Add this colour</button>
           </div>
           <label class="check"><input type="checkbox" id="cycleChk" checked> <span>Move to the next pot after each colour, as marblers lay colours in sequence</span></label>
+        </div>
+        <div class="section">
+          <h3><span>Your palettes</span><small>kept in this browser</small></h3>
+          <div class="pal-actions">
+            <button class="btn ink small" id="newPalBtn" type="button">New palette</button>
+            <button class="btn ink small" id="imgPalBtn" type="button">Palette from an image</button>
+            <input type="file" id="imgFile" accept="image/*" hidden>
+          </div>
+          <div class="ctl"><label for="imgCountR">Colours to take from an image</label><output id="imgCountO"></output><input type="range" id="imgCountR" min="3" max="10" step="1" value="6"><span class="hint">You can also drop an image anywhere on this panel.</span></div>
         </div>
         <div class="section">
           <h3><span>In the colour</span><small>for what you drop next</small></h3>
@@ -1720,7 +1755,7 @@ const store = {
 const reduceMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const S = {
-  tool: "drop", suiteId: "florentine", pots: [], potIdx: 0, customPots: [], plateSuite: null,
+  tool: "drop", suiteId: "florentine", pots: [], potIdx: 0, plateSuite: null,
   cycle: true, oil: 0, gall: 1, size: 1, ownColours: true, trad: "all",
   plateNo: store.get("plateNo", 1), plateName: "", last: null, studio: false,
   sheets: store.get("sheets", []), userRecipes: store.get("recipes", []),
@@ -1733,8 +1768,14 @@ const S = {
 let M = null;
 const toastEl = $("#toast");
 let toastTimer = 0;
-function toast(msg, ms = 3800) {
-  toastEl.textContent = msg; toastEl.hidden = false;
+function toast(msg, ms = 3800, action) {
+  toastEl.textContent = msg;
+  if (action) {
+    const b = document.createElement("button"); b.type = "button"; b.className = "toast-act"; b.textContent = action.label;
+    b.addEventListener("click", () => { toastEl.hidden = true; action.fn(); });
+    toastEl.append(" ", b);
+  }
+  toastEl.hidden = false;
   clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.hidden = true, ms);
 }
 
@@ -1770,22 +1811,97 @@ TABS.forEach((t, i) => {
   });
 });
 
-/* ---------- Colour pots: the bench grid and the strip beside the bath ---------- */
+/* ---------- Colour pots: palettes, the bench grid and the strip beside the bath ---------- */
+/* S.work holds the pigments in hand; clear water and bronze are always on the bench after them. */
 const suiteSel = $("#suiteSel");
+S.palettes = store.get("palettes", []);
+S.work = []; S.edited = false;
+const toPot = c => { const rgb = c.rgb || hex2rgb(c.hex); return { name: c.name, rgb, hex: c.hex || rgb2hex(rgb) }; };
+const userPal = id => typeof id === "string" && id.startsWith("user:") ? S.palettes.find(p => "user:" + p.id === id) : null;
+function savePalettes() {
+  if (!store.set("palettes", S.palettes)) toast("This browser would not keep your palettes, so they will last only until the page is closed.");
+}
+function suiteName(id) {
+  if (id === "plate") return "Colours of this plate";
+  const u = userPal(id); if (u) return u.name;
+  const s = SUITES.find(x => x.id === id); return s ? s.name : "Palette";
+}
 function fillSuiteSelect() {
   suiteSel.innerHTML = "";
   if (S.plateSuite) suiteSel.add(new Option("Colours of this plate", "plate"));
-  SUITES.forEach(s => suiteSel.add(new Option(s.name, s.id)));
+  if (S.palettes.length) {
+    const g = document.createElement("optgroup"); g.label = "Your palettes";
+    S.palettes.forEach(p => g.appendChild(new Option(p.name, "user:" + p.id))); suiteSel.appendChild(g);
+  }
+  const g2 = document.createElement("optgroup"); g2.label = "Historical suites";
+  SUITES.forEach(s => g2.appendChild(new Option(s.name, s.id))); suiteSel.appendChild(g2);
   suiteSel.value = S.suiteId;
 }
 function setSuite(id, pal) {
   if (id === "plate") S.plateSuite = pal || S.plateSuite;
-  S.suiteId = id;
+  let base;
+  if (id === "plate") base = S.plateSuite;
+  else if (userPal(id)) base = userPal(id).colours;
+  else { if (!SUITES.some(s => s.id === id)) id = SUITES[0].id; base = suitePal(id); }
+  S.suiteId = id; S.edited = false;
+  S.work = (base || []).map(toPot);
   fillSuiteSelect();
-  const base = id === "plate" ? S.plateSuite : suitePal(id);
-  S.pots = [...base, ...S.customPots, CLEAR, BRONZE];
-  S.potIdx = 0;
-  renderPots();
+  rebuildPots(0);
+}
+function rebuildPots(idx) {
+  S.pots = [...S.work, CLEAR, BRONZE];
+  S.potIdx = Math.max(0, Math.min(idx ?? S.potIdx, S.pots.length - 1));
+  renderPots(); renderPaletteBar();
+}
+/* after any change to the colours in hand: your own palettes keep it, the historical suites are marked as edited */
+function paletteChanged() {
+  const u = userPal(S.suiteId);
+  if (u) { u.colours = S.work.map(c => ({ name: c.name, hex: c.hex })); savePalettes(); }
+  else S.edited = true;
+}
+function renderPaletteBar() {
+  const bar = $("#palBar"), u = userPal(S.suiteId);
+  bar.innerHTML = "";
+  if (u) {
+    const row = document.createElement("div"); row.className = "palrow";
+    if (u.thumb) { const im = new Image(); im.src = u.thumb; im.alt = "The image this palette came from"; im.className = "palthumb"; row.appendChild(im); }
+    const lab = document.createElement("label"); lab.className = "sr-only"; lab.htmlFor = "palName"; lab.textContent = "Palette name";
+    const inp = document.createElement("input"); inp.type = "text"; inp.id = "palName"; inp.maxLength = 40; inp.value = u.name;
+    inp.addEventListener("change", () => {
+      u.name = inp.value.trim() || u.name; inp.value = u.name; savePalettes(); fillSuiteSelect();
+    });
+    const del = document.createElement("button"); del.type = "button"; del.className = "btn ink small"; del.textContent = "Delete palette";
+    del.addEventListener("click", () => deletePalette(u));
+    row.append(lab, inp, del); bar.appendChild(row);
+    const note = document.createElement("p"); note.className = "palnote";
+    note.textContent = "Your palette. Changes are kept as you make them.";
+    bar.appendChild(note);
+  } else if (S.edited) {
+    const row = document.createElement("div"); row.className = "palrow";
+    const note = document.createElement("p"); note.className = "palnote";
+    note.textContent = `You have changed ${suiteName(S.suiteId)}. Save it as your own palette to keep the changes.`;
+    const save = document.createElement("button"); save.type = "button"; save.className = "btn ink small"; save.textContent = "Save as my palette";
+    save.addEventListener("click", () => newPalette(`${suiteName(S.suiteId)}, my version`, S.work));
+    row.append(note, save); bar.appendChild(row);
+  }
+  if (!S.work.length) {
+    const e = document.createElement("p"); e.className = "palnote empty-pots";
+    e.textContent = "No colours in this palette yet. Add one with the colour picker below, or make a palette from an image.";
+    bar.appendChild(e);
+  }
+}
+function newPalette(name, colours, thumb) {
+  const p = { id: Date.now().toString(36) + Math.floor(Math.random() * 1e4).toString(36), name: name.slice(0, 40), colours: colours.map(c => ({ name: c.name, hex: c.hex || rgb2hex(c.rgb) })) };
+  if (thumb) p.thumb = thumb;
+  S.palettes.unshift(p); savePalettes();
+  setSuite("user:" + p.id);
+  return p;
+}
+function deletePalette(u) {
+  const i = S.palettes.indexOf(u); if (i < 0) return;
+  S.palettes.splice(i, 1); savePalettes();
+  setSuite(SUITES[0].id);
+  toast(`${u.name} is deleted.`, 6000, { label: "Undo", fn: () => { S.palettes.splice(i, 0, u); savePalettes(); setSuite("user:" + u.id); } });
 }
 const wellBg = p => p.metal
   ? "radial-gradient(circle at 35% 30%, #f6e2a0, #b08a3e 45%, #5e4316)"
@@ -1801,6 +1917,7 @@ function renderPots() {
   g.innerHTML = ""; strip.innerHTML = '<span class="strip-label">Colours</span>';
   S.pots.forEach((p, i) => {
     const on = i === S.potIdx ? "true" : "false";
+    const wrap = document.createElement("div"); wrap.className = "potwrap";
     const b = document.createElement("button");
     b.type = "button"; b.className = "pot" + (p.clear ? " clear" : "");
     b.setAttribute("aria-pressed", on);
@@ -1808,7 +1925,15 @@ function renderPots() {
     const n = document.createElement("span"); n.className = "pname"; n.textContent = p.name;
     b.append(w, n);
     b.addEventListener("click", () => selectPot(i));
-    g.appendChild(b);
+    wrap.appendChild(b);
+    if (!p.clear && !p.metal) {
+      const rm = document.createElement("button"); rm.type = "button"; rm.className = "rm";
+      rm.setAttribute("aria-label", `Remove ${p.name}`); rm.title = `Remove ${p.name}`; rm.textContent = "×";
+      rm.addEventListener("click", () => removePot(i));
+      b.addEventListener("keydown", e => { if (e.key === "Delete" || e.key === "Backspace") { e.preventDefault(); removePot(i); } });
+      wrap.appendChild(rm);
+    }
+    g.appendChild(wrap);
 
     const c = document.createElement("button");
     c.type = "button"; c.className = "chip" + (p.clear ? " clear" : "");
@@ -1820,6 +1945,21 @@ function renderPots() {
     strip.appendChild(c);
   });
   updateInHand();
+}
+function removePot(i) {
+  const p = S.pots[i]; if (!p || p.clear || p.metal) return;
+  S.work.splice(i, 1);
+  paletteChanged();
+  rebuildPots(Math.min(S.potIdx > i ? S.potIdx - 1 : S.potIdx, S.work.length ? S.work.length - 1 : 0));
+  const keepId = S.suiteId;
+  toast(`${p.name} is removed from the palette.`, 6000, { label: "Put it back", fn: () => {
+    if (S.suiteId !== keepId) setSuite(keepId);
+    S.work.splice(Math.min(i, S.work.length), 0, p); paletteChanged(); rebuildPots(i);
+  } });
+  const focusTo = $$("#potsGrid .pot")[Math.min(i, S.pots.length - 1)]; if (focusTo) focusTo.focus();
+}
+function addPot(p) {
+  S.work.push(p); paletteChanged(); rebuildPots(S.work.length - 1);
 }
 function selectPot(i, announce = true) {
   if (i < 0 || i >= S.pots.length) return;
@@ -1836,20 +1976,139 @@ function updateInHand() {
 const pot = () => S.pots[S.potIdx] || S.pots[0];
 function nextPot() {
   if (!S.cycle) return;
-  const n = S.pots.length - 2; // cycle through the pigments, not the clear water or bronze
-  if (S.potIdx < n) { S.potIdx = (S.potIdx + 1) % Math.max(1, n); renderPots(); }
+  const n = S.work.length; // cycle through the pigments, not the clear water or bronze
+  if (n && S.potIdx < n) { S.potIdx = (S.potIdx + 1) % n; renderPots(); }
 }
-const potsPal = () => S.pots.filter(p => !p.clear && !p.metal);
+/* the pigments in hand, or a historical suite when the palette is empty */
+const potsPal = () => S.work.length ? S.work.slice() : suitePal(SUITES[0].id);
 suiteSel.addEventListener("change", () => setSuite(suiteSel.value));
+
+/* ---------- Naming a colour ---------- */
+function rgb2hsl([r, g, b]) {
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, d = mx - mn;
+  if (!d) return [0, 0, l];
+  const s = d / (1 - Math.abs(2 * l - 1));
+  let h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return [(h * 60 + 360) % 360, s, l];
+}
+const HUE_NAMES = [[8, "red"], [22, "vermilion"], [34, "orange"], [52, "ochre"], [64, "yellow"], [90, "olive"], [150, "green"], [178, "teal"], [198, "turquoise"], [222, "blue"], [250, "ultramarine"], [278, "violet"], [305, "plum"], [335, "rose"], [352, "crimson"], [361, "red"]];
+function nameColour(rgb, taken = []) {
+  const [h, s, l] = rgb2hsl(rgb);
+  let name;
+  if (s < 0.12 || (l < 0.12 && s < 0.4)) name = l < 0.16 ? "Ivory black" : l < 0.35 ? "Charcoal" : l < 0.6 ? "Slate grey" : l < 0.86 ? "Dove grey" : "Chalk white";
+  else {
+    let hue = HUE_NAMES.find(([lim]) => h < lim)[1];
+    if (hue === "orange" && l < 0.4) hue = "umber";
+    if (hue === "ochre" && l < 0.38) hue = "sienna";
+    if (l > 0.88) name = h >= 20 && h < 75 ? "Cream" : "Pale " + hue;
+    else {
+      const adj = l < 0.28 ? "Deep" : l > 0.66 ? "Pale" : s < 0.3 ? "Dusky" : "";
+      name = adj ? `${adj} ${hue}` : hue[0].toUpperCase() + hue.slice(1);
+    }
+  }
+  let out = name, n = 2;
+  while (taken.includes(out)) out = `${name} ${roman(n++)}`;
+  return out;
+}
+
+/* ---------- Adding colours, new palettes and palettes from an image ---------- */
 $("#grindBtn").addEventListener("click", () => {
-  const hex = $("#grindColor").value;
-  const p = { name: "Your colour " + roman(S.customPots.length + 1), hex, rgb: hex2rgb(hex) };
-  S.customPots.push(p);
-  const at = S.pots.length - 2;
-  S.pots.splice(at, 0, p); S.potIdx = at; renderPots();
+  const hex = $("#grindColor").value, rgb = hex2rgb(hex);
+  const p = { name: nameColour(rgb, S.work.map(c => c.name)), hex, rgb };
+  addPot(p);
   toast(`${p.name} is ground and in its pot.`);
 });
-$("#cycleChk").addEventListener("change", e => S.cycle = e.target.checked);
+$("#newPalBtn").addEventListener("click", () => {
+  const n = S.palettes.length + 1;
+  newPalette(`My palette ${roman(n)}`, []);
+  toast("A new, empty palette. Add colours with the picker, or make one from an image.");
+  const inp = $("#palName"); if (inp) { inp.focus(); inp.select(); }
+});
+$("#imgPalBtn").addEventListener("click", () => $("#imgFile").click());
+$("#imgFile").addEventListener("change", e => { const f = e.target.files && e.target.files[0]; if (f) paletteFromImage(f); e.target.value = ""; });
+const IMG_COUNT = bindRangeLate("#imgCountR", "#imgCountO");
+function bindRangeLate(id, outId) {
+  const r = $(id), o = $(outId), show = () => o.textContent = r.value + " colours";
+  r.addEventListener("input", show); show(); return r;
+}
+const potsPanel = $(".panel.pots");
+["dragenter", "dragover"].forEach(t => potsPanel.addEventListener(t, e => {
+  if (!e.dataTransfer || ![...e.dataTransfer.types].includes("Files")) return;
+  e.preventDefault(); potsPanel.classList.add("dropping");
+}));
+["dragleave", "drop"].forEach(t => potsPanel.addEventListener(t, e => {
+  if (t === "dragleave" && potsPanel.contains(e.relatedTarget)) return;
+  potsPanel.classList.remove("dropping");
+}));
+potsPanel.addEventListener("drop", e => {
+  const f = e.dataTransfer && [...e.dataTransfer.files].find(x => x.type.startsWith("image/"));
+  if (!f) return;
+  e.preventDefault(); showTab("colour"); paletteFromImage(f);
+});
+
+/* OKLab makes distances between colours closer to what the eye sees */
+function toOklab([r, g, b]) {
+  const lin = v => v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+  r = lin(r); g = lin(g); b = lin(b);
+  const l = Math.cbrt(0.4122214708 * r + 0.5363015719 * g + 0.0514459929 * b);
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  return [0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s, 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s, 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s];
+}
+/* k-means in OKLab, seeded with k-means++, then near-duplicates merged */
+function extractColours(pixels, k) {
+  const pts = pixels.map(toOklab), N = pts.length, rng = mulberry(91);
+  const d2 = (a, b) => (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2;
+  const cents = [pts[Math.floor(rng() * N)]];
+  const dist = new Float64Array(N).fill(Infinity);
+  while (cents.length < k) {
+    let sum = 0;
+    for (let i = 0; i < N; i++) { dist[i] = Math.min(dist[i], d2(pts[i], cents[cents.length - 1])); sum += dist[i]; }
+    if (!sum) break;
+    let t = rng() * sum, j = 0; while ((t -= dist[j]) > 0 && j < N - 1) j++;
+    cents.push(pts[j]);
+  }
+  const assign = new Int32Array(N);
+  for (let it = 0; it < 14; it++) {
+    const acc = cents.map(() => [0, 0, 0, 0, 0, 0, 0]);
+    for (let i = 0; i < N; i++) {
+      let best = 0, bd = Infinity;
+      for (let c = 0; c < cents.length; c++) { const d = d2(pts[i], cents[c]); if (d < bd) { bd = d; best = c; } }
+      assign[i] = best; const a = acc[best], px = pixels[i];
+      a[0] += pts[i][0]; a[1] += pts[i][1]; a[2] += pts[i][2]; a[3] += px[0]; a[4] += px[1]; a[5] += px[2]; a[6]++;
+    }
+    acc.forEach((a, c) => { if (a[6]) cents[c] = [a[0] / a[6], a[1] / a[6], a[2] / a[6]]; cents[c].rgb = a[6] ? [a[3] / a[6], a[4] / a[6], a[5] / a[6]] : cents[c].rgb; cents[c].n = a[6]; });
+  }
+  let out = cents.filter(c => c.rgb && c.n > N * 0.012).sort((a, b) => b.n - a.n);
+  const kept = [];
+  out.forEach(c => { if (!kept.some(k2 => d2(k2, c) < 0.0016)) kept.push(c); });
+  return kept.sort((a, b) => a[0] - b[0]).map(c => c.rgb); // dark to light: the first colours become the veins
+}
+function paletteFromImage(file) {
+  if (!file.type.startsWith("image/")) { toast("That file is not an image. Choose a JPEG, PNG, WebP or GIF."); return; }
+  const url = URL.createObjectURL(file), img = new Image();
+  img.onload = () => {
+    try {
+      const max = 140, sc = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+      const w = Math.max(1, Math.round(img.naturalWidth * sc)), h = Math.max(1, Math.round(img.naturalHeight * sc));
+      const c = document.createElement("canvas"); c.width = w; c.height = h;
+      const x = c.getContext("2d"); x.drawImage(img, 0, 0, w, h);
+      const data = x.getImageData(0, 0, w, h).data, px = [];
+      for (let i = 0; i < data.length; i += 4) if (data[i + 3] > 128) px.push([data[i] / 255, data[i + 1] / 255, data[i + 2] / 255]);
+      if (px.length < 10) { toast("That image has too few solid pixels to take colours from."); return; }
+      const rgbs = extractColours(px, +IMG_COUNT.value);
+      const names = [], colours = rgbs.map(rgb => { const name = nameColour(rgb, names); names.push(name); return { name, rgb, hex: rgb2hex(rgb) }; });
+      const t = document.createElement("canvas"), ts = Math.min(1, 96 / Math.max(w, h));
+      t.width = Math.round(w * ts); t.height = Math.round(h * ts); t.getContext("2d").drawImage(c, 0, 0, t.width, t.height);
+      const base = (file.name || "image").replace(/\.[a-z0-9]+$/i, "").replace(/[_-]+/g, " ").trim().slice(0, 28) || "image";
+      newPalette(`From ${base}`, colours, t.toDataURL("image/jpeg", 0.8));
+      toast(`${colours.length} colours taken from ${file.name || "the image"}. Remove any you don't want with ×.`);
+      caption(`${pot().name} is in hand.`);
+    } finally { URL.revokeObjectURL(url); }
+  };
+  img.onerror = () => { URL.revokeObjectURL(url); toast("That image could not be opened. Try a JPEG or PNG."); };
+  img.src = url;
+}
 
 /* ---------- Sliders ---------- */
 function bindRange(id, outId, fmt, onInput) {

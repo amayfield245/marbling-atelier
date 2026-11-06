@@ -30,16 +30,26 @@
       <div class="tabpanel" role="tabpanel" id="panel-colour" aria-labelledby="tab-colour">
         <p class="tab-note">Pigment ground with ox gall. Pick a pot here or from the strip beside the bath.</p>
         <div class="section">
-          <h3><span>Suite of colours</span></h3>
-          <label class="sr-only" for="suiteSel">Suite of colours</label>
+          <h3><span>Palette</span></h3>
+          <label class="sr-only" for="suiteSel">Palette</label>
           <select id="suiteSel"></select>
-          <div class="pots-grid" id="potsGrid" role="group" aria-label="Colour pots"></div>
+          <div class="palbar" id="palBar"></div>
+          <div class="pots-grid" id="potsGrid" role="group" aria-label="Colour pots. Use the × on a pot, or Delete, to remove it."></div>
           <div class="grind">
             <label class="sr-only" for="grindColor">New colour</label>
             <input type="color" id="grindColor" value="#3a6e8f">
-            <button class="btn ink small" id="grindBtn" type="button">Grind a new pot</button>
+            <button class="btn ink small" id="grindBtn" type="button">Add this colour</button>
           </div>
           <label class="check"><input type="checkbox" id="cycleChk" checked> <span>Move to the next pot after each colour, as marblers lay colours in sequence</span></label>
+        </div>
+        <div class="section">
+          <h3><span>Your palettes</span><small>kept in this browser</small></h3>
+          <div class="pal-actions">
+            <button class="btn ink small" id="newPalBtn" type="button">New palette</button>
+            <button class="btn ink small" id="imgPalBtn" type="button">Palette from an image</button>
+            <input type="file" id="imgFile" accept="image/*" hidden>
+          </div>
+          <div class="ctl"><label for="imgCountR">Colours to take from an image</label><output id="imgCountO"></output><input type="range" id="imgCountR" min="3" max="10" step="1" value="6"><span class="hint">You can also drop an image anywhere on this panel.</span></div>
         </div>
         <div class="section">
           <h3><span>In the colour</span><small>for what you drop next</small></h3>
